@@ -140,6 +140,12 @@ select.big{width:100%;height:48px;border:1px solid var(--line);border-radius:10p
 .chart .ln{stroke:var(--chart);fill:none;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
 .chart .gr{stroke:var(--line);stroke-width:1}
 .chart .pt{fill:var(--chart);stroke:var(--surface);stroke-width:2}
+.chart .ln2{stroke:var(--ink);fill:none;stroke-width:2;stroke-dasharray:6 4;stroke-linejoin:round;stroke-linecap:round}
+.chart .pt2{fill:var(--ink);stroke:var(--surface);stroke-width:2}
+.legend{display:flex;gap:16px;justify-content:center;font:400 12px var(--f-body);color:var(--muted);margin:2px 0 4px}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px;background:var(--chart);border-radius:50%}
+.legend i.sq{background:var(--ink);border-radius:2px}
+.tile b+b{margin-top:2px}
 .chart .lv{fill:var(--ink);font-weight:600;font-size:11px}
 .tbl{width:100%;border-collapse:collapse;font:400 13px var(--f-mono)}
 .tbl td,.tbl th{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
@@ -466,18 +472,57 @@ function sumBlock(all){
  h+='<p class="small">A bioimpedância varia com hidratação, alimentação e horário, então diferenças pequenas podem ser só variação do aparelho. Meça sempre nas mesmas condições, como de manhã e em jejum.</p></div></section>';
  return h}
 
+var PAIRS=[['braco_d','braco_e','Braço relaxado (dir. × esq.)'],['braco_dc','braco_ec','Braço contraído (dir. × esq.)'],['coxa_d','coxa_e','Coxa (dir. × esq.)'],['pant_d','pant_e','Panturrilha (dir. × esq.)']];
+function pairOf(k){var r=null;PAIRS.forEach(function(p){if(p[0]===k||p[1]===k)r=p});return r}
+function chartSvg2(sa,sb,unit,aria){
+ var W=340,H=190,L=38,R=14,T=16,B=28,ds=[];
+ sa.concat(sb).forEach(function(p){if(ds.indexOf(p.date)<0)ds.push(p.date)});ds.sort();
+ var vals=sa.concat(sb).map(function(p){return p.v}),mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals);if(mn===mx){mn-=5;mx+=5}
+ var st=niceStep((mx-mn)/3),y0=Math.floor((mn-st*.2)/st)*st,y1=Math.ceil((mx+st*.2)/st)*st;
+ function X(d){var i=ds.indexOf(d);return ds.length===1?(L+W-R)/2:L+(W-L-R)*i/(ds.length-1)}
+ function Y(v){return T+(H-T-B)*(1-(v-y0)/(y1-y0))}
+ var g='';for(var v=y0;v<=y1+1e-9;v+=st){var y=Y(v);g+='<line class="gr" x1="'+L+'" x2="'+(W-R)+'" y1="'+y+'" y2="'+y+'"/><text x="'+(L-6)+'" y="'+(y+3)+'" text-anchor="end">'+esc(fmtW(v))+'</text>'}
+ function line(s,cl){return (s.length>1?'<polyline class="'+cl+'" points="'+s.map(function(p){return X(p.date)+','+Y(p.v)}).join(' ')+'"/>':'')}
+ var o=line(sb,'ln2')+line(sa,'ln');
+ sb.forEach(function(p){o+='<rect class="pt2" x="'+(X(p.date)-4)+'" y="'+(Y(p.v)-4)+'" width="8" height="8" rx="1.5"/>'});
+ sa.forEach(function(p){o+='<circle class="pt" cx="'+X(p.date)+'" cy="'+Y(p.v)+'" r="4.5"/>'});
+ var la=sa[sa.length-1],lb=sb[sb.length-1],up=la&&lb?la.v>=lb.v:true;
+ function lab(p,above){return p?'<text class="lv" x="'+X(p.date)+'" y="'+(Y(p.v)+(above?-10:20))+'" text-anchor="end">'+esc(fmtW(p.v))+esc(unit)+'</text>':''}
+ o+=lab(la,up)+lab(lb,!up);
+ var xl='';ds.forEach(function(d,i){var n=ds.length;if(n<=6||i===0||i===n-1||i%Math.ceil(n/5)===0)xl+='<text x="'+X(d)+'" y="'+(H-8)+'" text-anchor="'+(i===0&&n>1?'start':i===n-1&&n>1?'end':'middle')+'">'+esc(fmtShort(d))+'</text>'});
+ return '<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(aria)+'">'+g+o+xl+'</svg>'}
 function chartBlock(){
- var av=[];BF.forEach(function(g){var li=g.f.filter(function(f){return series(f[0]).length>0});if(li.length)av.push({g:g.g,f:li})});
+ var av=[],valid=[];
+ BF.forEach(function(g){var items=[];g.f.forEach(function(f){var pr=pairOf(f[0]);
+  if(pr){if(pr[0]===f[0]&&(series(pr[0]).length||series(pr[1]).length))items.push(['p:'+pr[0]+'|'+pr[1],pr[2]])}
+  else if(series(f[0]).length)items.push([f[0],f[1]])});
+  if(items.length)av.push({g:g.g,f:items})});
  if(!av.length)return '';
- var ok=false;av.forEach(function(g){g.f.forEach(function(f){if(f[0]===S.bsel)ok=true})});if(!ok)S.bsel=av[0].f[0][0];
- var d=fdef(S.bsel),s=series(S.bsel),last=s[s.length-1],u=d[2];
+ av.forEach(function(g){g.f.forEach(function(f){valid.push(f[0])})});
+ if(valid.indexOf(S.bsel)<0)S.bsel=av[0].f[0][0];
  var opts=av.map(function(g){return '<optgroup label="'+esc(g.g)+'">'+g.f.map(function(f){return '<option value="'+f[0]+'"'+(f[0]===S.bsel?' selected':'')+'>'+esc(f[1])+'</option>'}).join('')+'</optgroup>'}).join('');
+ if(S.bsel.indexOf('p:')===0)return pairBlock(opts);
+ var d=fdef(S.bsel),s=series(S.bsel),last=s[s.length-1],u=d[2];
  function tile(lbl,ref){
   if(!ref)return '<div class="tile"><span>'+lbl+'</span><b>—</b><span>sem dados</span></div>';
   var x=last.v-ref.v;return '<div class="tile"><span>'+lbl+'</span><b class="'+dcls(x,d[3],u)+'">'+arw(x,u)+' '+fmtDelta(x,u)+'</b><span>desde '+esc(fmtShort(ref.date))+'</span></div>'}
  return '<section class="sec"><span class="lbl">Evolução de cada medida</span><select class="big" data-f="bsel" aria-label="Medida" style="margin-top:2px">'+opts+'</select>'
  +'<div class="tiles"><div class="tile"><span>Atual</span><b>'+fmtN(last.v,u)+'</b><span>'+esc(u)+' · '+esc(fmtShort(last.date))+'</span></div>'+tile('Desde a 1ª',s.length>1?s[0]:null)+tile('Desde a última',s.length>1?s[s.length-2]:null)+'</div>'
  +'<div class="card">'+chartSvg(s.map(function(p){return {date:p.date,top:p.v}}),' '+u,d[1]+' ao longo do tempo, em '+u)+(s.length<2?'<p class="small">A linha aparece a partir da segunda medição.</p>':'')+'</div></section>'}
+
+function pairBlock(opts){
+ var ks=S.bsel.slice(2).split('|'),d=fdef(ks[0]),u=d[2],sa=series(ks[0]),sb=series(ks[1]);
+ function cur(s){return s.length?fmtN(s[s.length-1].v,u):'—'}
+ function dl(s,ref){if(!ref||s.length<2)return '<b>—</b>';var x=s[s.length-1].v-ref.v;return '<b class="'+dcls(x,d[3],u)+'">'+arw(x,u)+' '+fmtDelta(x,u)+'</b>'}
+ function when(s,f){return s.length>1?'desde '+esc(fmtShort(f(s).date)):'sem dados'}
+ var allD=sa.concat(sb).map(function(p){return p.date}).sort();
+ var tiles='<div class="tiles"><div class="tile"><span>Atual (dir. · esq.)</span><b>'+cur(sa)+'</b><b>'+cur(sb)+'</b><span>'+esc(u)+'</span></div>'
+  +'<div class="tile"><span>Desde a 1ª</span>'+dl(sa,sa[0])+dl(sb,sb[0])+'<span>dir. · esq.</span></div>'
+  +'<div class="tile"><span>Desde a última</span>'+dl(sa,sa[sa.length-2])+dl(sb,sb[sb.length-2])+'<span>dir. · esq.</span></div></div>';
+ var few=Math.max(sa.length,sb.length)<2;
+ return '<section class="sec"><span class="lbl">Evolução de cada medida</span><select class="big" data-f="bsel" aria-label="Medida" style="margin-top:2px">'+opts+'</select>'+tiles
+  +'<div class="card"><div class="legend"><span><i></i>Direito</span><span><i class="sq"></i>Esquerdo</span></div>'
+  +chartSvg2(sa,sb,' '+u,'Direito e esquerdo ao longo do tempo, em '+u)+(few?'<p class="small">A linha aparece a partir da segunda medição.</p>':'')+'</div></section>'}
 
 function varBlock(){
  var rows='';

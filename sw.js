@@ -1,5 +1,5 @@
 /* Service worker do Diário de Carga: guarda o app no aparelho para abrir sem internet. */
-const V = 'dc-v4';
+const V = 'dc-v5';
 const FONTS = 'dc-fonts';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
