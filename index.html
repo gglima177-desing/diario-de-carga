@@ -58,6 +58,7 @@ h2{font:700 22px/1.1 var(--f-display);letter-spacing:.03em;text-transform:upperc
 .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--surface2);border-radius:10px;padding:3px;gap:3px}
 .seg button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:14px;padding:9px 6px;border-radius:8px;min-height:40px}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 0 var(--line)}
+.upd{position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:50;background:var(--ink);color:var(--on-ink);border:0;border-radius:10px;padding:12px 14px;font:600 14px var(--f-body);text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.3)}
 .note{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;color:var(--muted);font-size:13px;margin:0 0 12px}
 .week{display:flex;gap:18px;margin:14px 0 4px;padding:0 2px}
 .week div{display:flex;flex-direction:column}
@@ -645,7 +646,13 @@ window.addEventListener('pagehide',function(){Store.flush()});
  S.sessions=d.sessions||{};
  S.body=d.body||{};Object.keys(S.body).forEach(function(k){var e=S.body[k];if(!e||!e.v||!Object.keys(e.v).length)delete S.body[k]});
  render();
- if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){})}
+ if('serviceWorker' in navigator){
+  var hadCtl=!!navigator.serviceWorker.controller,shown=false;
+  navigator.serviceWorker.addEventListener('controllerchange',function(){
+   if(!hadCtl||shown)return;shown=true;
+   var b=document.createElement('button');b.type='button';b.className='upd';b.textContent='Nova versão disponível. Toque para atualizar';
+   b.onclick=function(){Store.flush();location.reload()};document.body.appendChild(b)});
+  navigator.serviceWorker.register('sw.js').catch(function(){})}
 })();
 })();
 </script>
