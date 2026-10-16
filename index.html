@@ -17,11 +17,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
-/* Layout: one phone column, three tabs (Treino, Evolução, Histórico); a training log built around barbell-plate colors. */
+/* Layout: one phone column, four tabs (Treino, Evolução, Medidas, Histórico); a training log built around barbell-plate colors. */
 :root{
   --bg:#E8EAE4; --surface:#F4F5F0; --surface2:#DADED5; --ink:#15181A; --muted:#566059; --line:#C6CBC1;
   --red:#C8261E; --on-red:#FFFFFF; --blue:#2457B8; --on-blue:#FFFFFF; --green:#2C8A4B; --on-green:#FFFFFF;
-  --yellow:#E0A91B; --on-yellow:#15181A; --on-ink:#F4F5F0; --chart:#2457B8;
+  --yellow:#E0A91B; --on-yellow:#15181A; --on-ink:#F4F5F0; --chart:#2457B8; --ok-t:#1F6B39; --bad-t:#B3201A;
   --f-display:'Big Shoulders Display','Arial Narrow','Roboto Condensed',sans-serif-condensed,Impact,sans-serif;
   --f-body:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
   --f-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
@@ -30,13 +30,13 @@
   :root:not([data-theme="light"]){
     --bg:#0F1112; --surface:#171A1B; --surface2:#222627; --ink:#ECEEE8; --muted:#9BA49D; --line:#2C3233;
     --red:#F0645A; --on-red:#0F1112; --blue:#78A1FF; --on-blue:#0F1112; --green:#52C27A; --on-green:#0F1112;
-    --yellow:#F0C14B; --on-yellow:#0F1112; --on-ink:#0F1112; --chart:#78A1FF; color-scheme:dark;
+    --yellow:#F0C14B; --on-yellow:#0F1112; --on-ink:#0F1112; --chart:#78A1FF; --ok-t:#52C27A; --bad-t:#F0645A; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0F1112; --surface:#171A1B; --surface2:#222627; --ink:#ECEEE8; --muted:#9BA49D; --line:#2C3233;
   --red:#F0645A; --on-red:#0F1112; --blue:#78A1FF; --on-blue:#0F1112; --green:#52C27A; --on-green:#0F1112;
-  --yellow:#F0C14B; --on-yellow:#0F1112; --on-ink:#0F1112; --chart:#78A1FF; color-scheme:dark;
+  --yellow:#F0C14B; --on-yellow:#0F1112; --on-ink:#0F1112; --chart:#78A1FF; --ok-t:#52C27A; --bad-t:#F0645A; color-scheme:dark;
 }
 html{color-scheme:light;-webkit-tap-highlight-color:transparent}
 :root{padding-top:env(safe-area-inset-top,0px)}
@@ -150,7 +150,7 @@ select.big{width:100%;height:48px;border:1px solid var(--line);border-radius:10p
 .empty b{display:block;color:var(--ink);font:700 20px var(--f-display);letter-spacing:.03em;text-transform:uppercase;margin-bottom:4px}
 .row{display:flex;flex-wrap:wrap;gap:8px}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);
   padding:0 max(16px,env(safe-area-inset-left,0px)) env(safe-area-inset-bottom,0px) max(16px,env(safe-area-inset-right,0px))}
 .tabbar button{border:0;background:none;min-height:54px;font-weight:700;font-size:13.5px;letter-spacing:.04em;color:var(--muted);position:relative}
 .tabbar button[aria-current="page"]{color:var(--ink)}
@@ -172,6 +172,18 @@ select.big{width:100%;height:48px;border:1px solid var(--line);border-radius:10p
 .newx{border-top:1px solid var(--line);padding-top:10px;margin-top:6px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
 .newx select{height:42px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink);padding:0 8px;font:500 14px var(--f-body);min-width:0}
 @media (prefers-reduced-motion:no-preference){.fill,.prog i{transition:width .25s ease}}
+.mfg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.mfg .fld input{height:46px;font-size:16px}
+.fld input::placeholder{color:var(--muted);opacity:.55}
+.mono{font-family:var(--f-mono)}
+.srow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.srow .mono{font-size:13px}
+.dl{font:600 13px var(--f-mono);white-space:nowrap}
+.dl.good,.tile b.good{color:var(--ok-t)}
+.dl.bad,.tile b.bad{color:var(--bad-t)}
+.verdict{background:var(--surface2);border-radius:12px;padding:12px 14px;font-weight:600;margin-top:12px}
+.vt td:first-child{font-family:var(--f-body)}
+.u{color:var(--muted);font-size:11px}
 </style>
 </head>
 <body>
@@ -220,7 +232,7 @@ var PLANS={
 };
 
 /* ---------- estado ---------- */
-var S={tab:'treino',sid:null,sessions:{},cfg:{program:'p5',custom:{},rest:90},ev:{ex:null,off:0},hoff:0,sheet:null,cf:null,status:'',note:'',view:''};
+var S={tab:'treino',sid:null,mid:null,body:{},bsel:'peso',bcmp:'first',sessions:{},cfg:{program:'p5',custom:{},rest:90},ev:{ex:null,off:0},hoff:0,sheet:null,cf:null,status:'',note:'',view:''};
 var app=document.getElementById('app');
 
 /* ---------- utilitários ---------- */
@@ -265,7 +277,7 @@ function setStatus(t){S.status=t;var e=document.getElementById('sv');if(e)e.text
 var Store={mode:'local',dl:true,timers:{},
  init:async function(){try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}},
  load:async function(){try{var o=JSON.parse(localStorage.getItem('dc1')||'null');if(o)return o}catch(e){}return {cfg:{},sessions:{}}},
- write:function(){try{localStorage.setItem('dc1',JSON.stringify({cfg:S.cfg,sessions:S.sessions}));setStatus('Salvo')}catch(e){setStatus('Sem espaço para salvar')}},
+ write:function(){try{localStorage.setItem('dc1',JSON.stringify({cfg:S.cfg,sessions:S.sessions,body:S.body}));setStatus('Salvo')}catch(e){setStatus('Sem espaço para salvar')}},
  saveSession:function(id,now){var self=this;clearTimeout(this.timers[id]);setStatus('Salvando…');var go=function(){delete self.timers[id];self.write()};if(now)go();else this.timers[id]=setTimeout(go,500)},
  saveCfg:function(){setStatus('Salvando…');this.write()},
  del:function(id){clearTimeout(this.timers[id]);delete this.timers[id];this.write()},
@@ -280,7 +292,9 @@ function newSession(day){
  return s}
 function mkEx(n,g,t){var a=[];for(var i=0;i<t;i++)a.push({t:'v',w:'',r:'',d:0});return {n:n,g:g,t:t,s:a,o:''}}
 function enterSession(id){S.sid=id;lockScreen();try{history.pushState({sid:1},'')}catch(e){}render()}
-function leaveSession(){if(history.state&&history.state.sid){history.back()}else{S.sid=null;render()}}
+function enterBody(id){S.mid=id;try{history.pushState({sid:1},'')}catch(e){}render()}
+function cleanBody(){var e=S.mid&&S.body[S.mid];if(e&&!Object.keys(e.v).length){delete S.body[S.mid];Store.del(S.mid)}}
+function leaveSession(){cleanBody();if(history.state&&history.state.sid){history.back()}else{S.sid=null;S.mid=null;render()}}
 function startDay(id){
  var day=dayById(id);var s=null;sorted().forEach(function(x){if(!x.fin&&x.day===id)s=x});
  if(!s){s=newSession(day);S.sessions[s.id]=s;touch(s)}
@@ -290,7 +304,13 @@ function groupVolume(ws){var we=addDays(ws,6),m={};sorted().forEach(function(s){
 
 /* ---------- telas ---------- */
 function statusEl(){return '<span class="sv" id="sv">'+esc(S.status)+'</span>'}
-function noteEl(){var t=S.note;if(!t&&!S.sid&&S.tab==='treino'){var n=Object.keys(S.sessions).length,lb=S.cfg.lastBackup||0;if(n>=3&&Date.now()-lb>14*864e5)t='Faz tempo que você não faz backup. Na aba Histórico, exporte o arquivo para não perder seus treinos se o navegador limpar os dados.'}return t?'<p class="note">'+esc(t)+'</p>':''}
+function noteEl(){var ts=[];if(S.note)ts.push(S.note);
+ if(!S.sid&&!S.mid&&S.tab==='treino'){
+  var n=Object.keys(S.sessions).length,lb=S.cfg.lastBackup||0;
+  if(n>=3&&Date.now()-lb>14*864e5)ts.push('Faz tempo que você não faz backup. Na aba Histórico, exporte o arquivo para não perder seus treinos se o navegador limpar os dados.');
+  var all=bodySorted(),rm=S.cfg.remind==null?4:S.cfg.remind;
+  if(rm&&all.length){var last=all[all.length-1],days=Math.round((dt(todayStr())-dt(last.date))/864e5);if(days>=rm*7)ts.push('Faz '+Math.floor(days/7)+' semanas desde a última medição ('+fmtShort(last.date)+'). Que tal medir de novo? Toque em Medidas.')}}
+ return ts.map(function(x){return '<p class="note">'+esc(x)+'</p>'}).join('')}
 
 function renderHome(){
  var P=PLANS[S.cfg.program],all=sorted(),ws=weekStart(todayStr()),gv=groupVolume(ws);
@@ -355,7 +375,7 @@ function renderSession(){
 function exStats(){
  var m={};sorted().forEach(function(s){s.ord.forEach(function(id){var en=s.ex[id],v=validSets(en);if(!v.length)return;var r=m[id]||(m[id]={id:id,n:en.n,g:en.g,rows:[]});r.n=en.n;r.g=en.g;var top=0,tr=0,bv=0;v.forEach(function(x){var w=num(x.w),rp=num(x.r);if(w>top||(w===top&&rp>tr)){top=w;tr=rp}bv=Math.max(bv,w*rp)});r.rows.push({date:s.date,top:top,tr:tr,bv:bv,sets:v})})});return m}
 function niceStep(r){var p=Math.pow(10,Math.floor(Math.log10(r||1))),f=r/p;return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p}
-function chartSvg(rows){
+function chartSvg(rows,unit,aria){
  var W=340,H=190,L=38,R=14,T=16,B=28,vals=rows.map(function(r){return r.top});
  var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals);if(mn===mx){mn-=5;mx+=5}
  var st=niceStep((mx-mn)/3),y0=Math.floor((mn-st*.2)/st)*st,y1=Math.ceil((mx+st*.2)/st)*st;
@@ -366,7 +386,7 @@ function chartSvg(rows){
  var dots=rows.map(function(r,i){return '<circle class="pt" cx="'+X(i)+'" cy="'+Y(r.top)+'" r="4.5"/>'}).join('');
  var xl='';rows.forEach(function(r,i){var n=rows.length;if(n<=6||i===0||i===n-1||i%Math.ceil(n/5)===0)xl+='<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="'+(i===0&&n>1?'start':i===n-1&&n>1?'end':'middle')+'">'+esc(fmtShort(r.date))+'</text>'});
  var last=rows[rows.length-1];
- return '<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Maior carga por treino, em kg">'+g+(rows.length>1?'<polyline class="ln" points="'+pts+'"/>':'')+dots+'<text class="lv" x="'+X(rows.length-1)+'" y="'+(Y(last.top)-10)+'" text-anchor="end">'+esc(fmtW(last.top))+' kg</text>'+xl+'</svg>'}
+ return '<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(aria||'Maior carga por treino, em kg')+'">'+g+(rows.length>1?'<polyline class="ln" points="'+pts+'"/>':'')+dots+'<text class="lv" x="'+X(rows.length-1)+'" y="'+(Y(last.top)+(rows.length>1&&rows[rows.length-2].top>last.top?20:-10))+'" text-anchor="end">'+esc(fmtW(last.top))+esc(unit==null?' kg':unit)+'</text>'+xl+'</svg>'}
 
 function renderEvo(){
  var ws=addDays(weekStart(todayStr()),S.ev.off*7),gv=groupVolume(ws),we=addDays(ws,6);
@@ -398,16 +418,110 @@ function renderHist(){
  if(!all.length)h+='<div class="empty"><b>Nenhum treino ainda</b>Abra um treino na aba Treino. Ele aparece aqui assim que você começar.</div>';
  h+=all.map(function(s){var k='ds:'+s.id;return '<div class="hrow"><button type="button" class="op" data-a="open" data-id="'+s.id+'"><h2>'+esc(s.dn)+'</h2><div class="meta">'+esc(fmtD(s.date))+(s.start?' · '+esc(s.start)+(s.end?'–'+esc(s.end):''):'')+(dur(s)?' · '+dur(s):'')+(s.ord.length?' · '+totalValid(s)+(totalValid(s)===1?' série válida':' séries válidas'):'')+(cdText(s)?' · '+esc(cdText(s)):'')+'</div></button><div>'+(s.fin?'':'<span class="tag live">Aberto</span> ')+'<button type="button" class="link warn" data-a="delsess" data-id="'+s.id+'">'+(S.cf===k?'Confirmar':'Apagar')+'</button></div></div>'}).join('');
  h+='<section class="sec"><span class="lbl">Backup</span><div class="card"><p class="small" style="margin-top:0">'+'Seus treinos ficam só neste aparelho e funcionam sem internet. Se você limpar os dados do navegador ou desinstalar o app, o histórico some. Por isso exporte o backup de vez em quando.'+(S.cfg.lastBackup?' Último backup: '+esc(fmtShort(new Date(S.cfg.lastBackup).getFullYear()+'-'+p2(new Date(S.cfg.lastBackup).getMonth()+1)+'-'+p2(new Date(S.cfg.lastBackup).getDate())))+'.':' Você ainda não fez nenhum backup.')+'</p><div class="row" style="margin-top:10px">'
- +(Store.dl?'<button type="button" class="btn ghost sm" data-a="exjson">Backup (JSON)</button><button type="button" class="btn ghost sm" data-a="excsv">Planilha (CSV)</button>':'')
+ +(Store.dl?'<button type="button" class="btn ghost sm" data-a="exjson">Backup (JSON)</button><button type="button" class="btn ghost sm" data-a="excsv">Treinos (CSV)</button><button type="button" class="btn ghost sm" data-a="exbody">Medidas (CSV)</button>':'')
  +'<label class="btn ghost sm">Importar backup<input class="vh" type="file" accept=".json,application/json" data-f="import"></label></div></div></section>';
  return h}
 
 /* ---------- render ---------- */
+/* ---------- medidas do corpo e bioimpedância ---------- */
+var BF=[
+ {g:'Peso e tronco',f:[['peso','Peso','kg',0],['cintura','Cintura','cm',-1],['abdomen','Abdômen','cm',-1],['peito','Peito','cm',0],['quadril','Quadril','cm',0]]},
+ {g:'Braços',f:[['braco_d','Braço direito','cm',1],['braco_e','Braço esquerdo','cm',1]]},
+ {g:'Pernas',f:[['coxa_d','Coxa direita','cm',1],['coxa_e','Coxa esquerda','cm',1],['pant_d','Panturrilha direita','cm',1],['pant_e','Panturrilha esquerda','cm',1]]},
+ {g:'Bioimpedância',f:[['gord_pct','Gordura corporal','%',-1],['gord_kg','Massa gorda','kg',-1],['musc_kg','Massa muscular','kg',1],['esq_kg','Músculo esquelético','kg',1],['magra_kg','Massa magra','kg',1],['agua_pct','Água corporal','%',0],['visc','Gordura visceral','nível',-1],['tmb','Metabolismo basal','kcal',0],['idade','Idade do corpo','anos',-1],['imc','IMC','kg/m²',0]]}
+];
+function bodySorted(){return Object.keys(S.body).map(function(k){return S.body[k]}).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0)})}
+function getV(e,k){var v=e.v[k];if(v!=null)return v;if(k==='gord_kg'&&e.v.peso!=null&&e.v.gord_pct!=null)return Math.round(e.v.peso*e.v.gord_pct)/100;return null}
+function series(k){var r=[];bodySorted().forEach(function(e){var v=getV(e,k);if(v!=null)r.push({date:e.date,v:v,id:e.id})});return r}
+function fdef(k){var r=null;BF.forEach(function(g){g.f.forEach(function(f){if(f[0]===k)r=f})});return r}
+function decOf(u){return (u==='kcal'||u==='nível'||u==='anos')?0:1}
+function fmtN(n,u){return n.toFixed(decOf(u)).replace('.',',')}
+function zero(d,u){return Math.abs(d)<Math.pow(10,-decOf(u))/2}
+function fmtDelta(d,u){var s=zero(d,u)?'':d>0?'+':'−';return s+Math.abs(d).toFixed(decOf(u)).replace('.',',')}
+function dcls(d,dir,u){if(!dir||zero(d,u))return '';return (d>0)===(dir>0)?'good':'bad'}
+function arw(d,u){return zero(d,u)?'•':d>0?'▲':'▼'}
+function lastVal(k,cur){var arr=bodySorted();for(var i=arr.length-1;i>=0;i--){var e=arr[i];if(e.id===cur.id||e.date>cur.date)continue;var v=getV(e,k);if(v!=null)return v}return null}
+function verdictText(df,dm){
+ var T=.5,f=df==null?null:Math.abs(df)<T?0:df<0?-1:1,m=dm==null?null:Math.abs(dm)<T?0:dm<0?-1:1,X=df==null?'':fmtN(Math.abs(df),'kg'),Y=dm==null?'':fmtN(Math.abs(dm),'kg');
+ if(f===null&&m===null)return 'Para esta leitura, preencha massa gorda (ou peso e % de gordura) e massa muscular nas duas medições.';
+ if(m===null)return f<0?'A massa gorda caiu '+X+' kg.':f>0?'A massa gorda subiu '+X+' kg.':'A massa gorda ficou estável.';
+ if(f===null)return m>0?'A massa muscular subiu '+Y+' kg.':m<0?'A massa muscular caiu '+Y+' kg.':'A massa muscular ficou estável.';
+ var t={'-1':{'1':'Perdeu '+X+' kg de gordura e ganhou '+Y+' kg de massa muscular.','0':'Perdeu '+X+' kg de gordura e manteve a massa muscular.','-1':'Perdeu '+X+' kg de gordura, mas também perdeu '+Y+' kg de massa muscular.'},
+  '0':{'1':'A gordura ficou estável e a massa muscular subiu '+Y+' kg.','0':'Sem mudança relevante em gordura e músculo neste período.','-1':'A gordura ficou estável e a massa muscular caiu '+Y+' kg.'},
+  '1':{'1':'Ganhou '+X+' kg de gordura e '+Y+' kg de massa muscular.','0':'Ganhou '+X+' kg de gordura e a massa muscular ficou estável.','-1':'Ganhou '+X+' kg de gordura e perdeu '+Y+' kg de massa muscular.'}};
+ return t[f][m]}
+
+function sumBlock(all){
+ var h='<section class="sec"><span class="lbl">Gordura × músculo</span>';
+ if(all.length<2)return h+'<div class="empty"><b>Falta uma medição</b>Com duas medições eu comparo peso, gordura e músculo aqui.</div></section>';
+ var A=S.bcmp==='last'?all[all.length-2]:all[0],B=all[all.length-1];
+ h+='<div class="seg" style="margin:0 0 10px" role="group" aria-label="Comparar com"><button type="button" data-a="bcmp" data-v="first" aria-pressed="'+(S.bcmp!=='last')+'">Desde a primeira</button><button type="button" data-a="bcmp" data-v="last" aria-pressed="'+(S.bcmp==='last')+'">Desde a última</button></div>';
+ h+='<div class="card"><p class="small" style="margin:0 0 4px">'+esc(fmtD(A.date))+' → '+esc(fmtD(B.date))+'</p>';
+ [['peso','Peso'],['gord_kg','Massa gorda'],['gord_pct','Gordura corporal'],['musc_kg','Massa muscular']].forEach(function(r){
+  var d=fdef(r[0]),a=getV(A,r[0]),b=getV(B,r[0]);if(a==null||b==null)return;var x=b-a;
+  h+='<div class="srow"><span>'+r[1]+'</span><span class="mono">'+fmtN(a,d[2])+' → '+fmtN(b,d[2])+' '+esc(d[2])+'</span><span class="dl '+dcls(x,d[3],d[2])+'">'+arw(x,d[2])+' '+fmtDelta(x,d[2])+'</span></div>'});
+ var fa=getV(A,'gord_kg'),fb=getV(B,'gord_kg'),ma=getV(A,'musc_kg'),mb=getV(B,'musc_kg');
+ h+='<div class="verdict">'+esc(verdictText(fa!=null&&fb!=null?fb-fa:null,ma!=null&&mb!=null?mb-ma:null))+'</div>';
+ h+='<p class="small">A bioimpedância varia com hidratação, alimentação e horário, então diferenças pequenas podem ser só variação do aparelho. Meça sempre nas mesmas condições, como de manhã e em jejum.</p></div></section>';
+ return h}
+
+function chartBlock(){
+ var av=[];BF.forEach(function(g){var li=g.f.filter(function(f){return series(f[0]).length>0});if(li.length)av.push({g:g.g,f:li})});
+ if(!av.length)return '';
+ var ok=false;av.forEach(function(g){g.f.forEach(function(f){if(f[0]===S.bsel)ok=true})});if(!ok)S.bsel=av[0].f[0][0];
+ var d=fdef(S.bsel),s=series(S.bsel),last=s[s.length-1],u=d[2];
+ var opts=av.map(function(g){return '<optgroup label="'+esc(g.g)+'">'+g.f.map(function(f){return '<option value="'+f[0]+'"'+(f[0]===S.bsel?' selected':'')+'>'+esc(f[1])+'</option>'}).join('')+'</optgroup>'}).join('');
+ function tile(lbl,ref){
+  if(!ref)return '<div class="tile"><span>'+lbl+'</span><b>—</b><span>sem dados</span></div>';
+  var x=last.v-ref.v;return '<div class="tile"><span>'+lbl+'</span><b class="'+dcls(x,d[3],u)+'">'+arw(x,u)+' '+fmtDelta(x,u)+'</b><span>desde '+esc(fmtShort(ref.date))+'</span></div>'}
+ return '<section class="sec"><span class="lbl">Evolução de cada medida</span><select class="big" data-f="bsel" aria-label="Medida" style="margin-top:2px">'+opts+'</select>'
+ +'<div class="tiles"><div class="tile"><span>Atual</span><b>'+fmtN(last.v,u)+'</b><span>'+esc(u)+' · '+esc(fmtShort(last.date))+'</span></div>'+tile('Desde a 1ª',s.length>1?s[0]:null)+tile('Desde a última',s.length>1?s[s.length-2]:null)+'</div>'
+ +'<div class="card">'+chartSvg(s.map(function(p){return {date:p.date,top:p.v}}),' '+u,d[1]+' ao longo do tempo, em '+u)+(s.length<2?'<p class="small">A linha aparece a partir da segunda medição.</p>':'')+'</div></section>'}
+
+function varBlock(){
+ var rows='';
+ BF.forEach(function(g){g.f.forEach(function(f){var s=series(f[0]);if(s.length<2)return;var last=s[s.length-1],a=last.v-s[0].v,b=last.v-s[s.length-2].v,u=f[2];
+  rows+='<tr><td>'+esc(f[1])+'</td><td>'+fmtN(last.v,u)+' <span class="u">'+esc(u)+'</span></td><td class="dl '+dcls(a,f[3],u)+'">'+arw(a,u)+' '+fmtDelta(a,u)+'</td><td class="dl '+dcls(b,f[3],u)+'">'+arw(b,u)+' '+fmtDelta(b,u)+'</td></tr>'})});
+ if(!rows)return '';
+ return '<section class="sec"><span class="lbl">Variação de cada medida</span><div class="card" style="overflow-x:auto;padding:8px 10px"><table class="tbl vt"><thead><tr><th>Medida</th><th>Atual</th><th>Desde 1ª</th><th>Desde últ.</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>'}
+
+function listBlock(all){
+ return '<section class="sec"><span class="lbl">Medições</span>'+all.slice().reverse().map(function(e){
+  var bits=[];[['peso','Peso'],['cintura','Cintura'],['gord_pct','Gordura'],['musc_kg','Músculo']].forEach(function(r){var v=getV(e,r[0]);if(v!=null){var d=fdef(r[0]);bits.push(r[1]+' '+fmtN(v,d[2])+' '+d[2])}});
+  var n=Object.keys(e.v).length;
+  return '<div class="hrow"><button type="button" class="op" data-a="openbody" data-id="'+e.id+'"><h2>'+esc(fmtD(e.date))+'</h2><div class="meta">'+(bits.length?esc(bits.join(' · '))+' · ':'')+n+' campo'+(n===1?'':'s')+'</div></button><span class="go">Abrir</span></div>'}).join('')+'</section>'}
+
+function renderBody(){
+ var all=bodySorted(),rm=S.cfg.remind==null?4:S.cfg.remind;
+ var h='<header class="top"><div><h1>Medidas</h1><p class="sub">Corpo e bioimpedância</p></div>'+statusEl()+'</header>'+noteEl();
+ h+='<button type="button" class="btn block" data-a="newbody">+ Nova medição</button>';
+ if(!all.length)h+='<div class="empty"><b>Nenhuma medição ainda</b>Toque em Nova medição e preencha o que tiver. Não precisa preencher tudo, e você pode misturar medidas com os dados da bioimpedância.</div>';
+ else h+=sumBlock(all)+chartBlock()+varBlock()+listBlock(all);
+ h+='<section class="sec"><span class="lbl">Lembrete para medir de novo</span><div class="seg" style="margin-top:2px" role="group" aria-label="Lembrete">'+[[0,'Desligado'],[2,'2 sem'],[4,'4 sem'],[8,'8 sem']].map(function(o){return '<button type="button" data-a="remind" data-v="'+o[0]+'" aria-pressed="'+(rm===o[0])+'">'+o[1]+'</button>'}).join('')+'</div><p class="small">O aviso aparece na aba Treino quando passar esse tempo desde a última medição.</p></section>';
+ return h}
+
+function renderBodyForm(){
+ var e=S.body[S.mid];if(!e){S.mid=null;return renderBody()}
+ var h='<button type="button" class="back" data-a="back">‹ Medidas</button><header class="top"><div><h1>Medição</h1><p class="sub">'+esc(fmtLong(e.date))+'</p></div>'+statusEl()+'</header>';
+ h+='<div class="shead"><label class="fld"><span class="lbl">Data</span><input type="date" data-f="bdate" value="'+esc(e.date)+'"></label><p class="small" style="margin:0">Preencha só o que você tiver hoje. Os números em cinza são os da medição anterior.</p></div>';
+ BF.forEach(function(g){
+  h+='<section class="ex"><div class="exh"><h2>'+esc(g.g)+'</h2><span class="lbl">'+(g.g==='Bioimpedância'?'Como no relatório':'cm e kg')+'</span></div><div class="mfg">'+g.f.map(function(f){
+   var v=e.v[f[0]],pv=lastVal(f[0],e);
+   return '<label class="fld"><span class="lbl">'+esc(f[1])+' ('+esc(f[2])+')</span><input inputmode="decimal" autocomplete="off" data-f="bf" data-k="'+f[0]+'" value="'+(v!=null?esc(String(v).replace('.',',')):'')+'" placeholder="'+(pv!=null?esc(fmtN(pv,f[2])):'')+'"></label>'}).join('')+'</div></section>'});
+ h+='<div style="margin-top:16px"><button type="button" class="btn warn block" data-a="delbody" data-id="'+e.id+'">'+(S.cf==='bd:'+e.id?'Confirmar exclusão':'Excluir medição')+'</button></div>';
+ return h}
+
+function exportBodyCsv(){
+ var cols=[];BF.forEach(function(g){g.f.forEach(function(f){cols.push(f)})});
+ var L=[['data'].concat(cols.map(function(f){return f[1]+' ('+f[2]+')'})).map(csvCell).join(';')];
+ bodySorted().forEach(function(e){L.push([e.date].concat(cols.map(function(f){return e.v[f[0]]==null?'':String(e.v[f[0]]).replace('.',',')})).map(csvCell).join(';'))});
+ saveFile('medidas-'+todayStr()+'.csv','﻿'+L.join('\n'),'text/csv;charset=utf-8',false)}
+
 function render(){
- var view=S.sid?'s'+S.sid:S.tab;var y=window.scrollY;
- var h=S.sid?renderSession():S.tab==='treino'?renderHome():S.tab==='evo'?renderEvo():renderHist();
+ var view=S.sid?'s'+S.sid:S.mid?'m'+S.mid:S.tab;var y=window.scrollY;
+ var h=S.sid?renderSession():S.mid?renderBodyForm():S.tab==='treino'?renderHome():S.tab==='evo'?renderEvo():S.tab==='body'?renderBody():renderHist();
  app.innerHTML=h;
- document.getElementById('tabs').innerHTML=[['treino','Treino'],['evo','Evolução'],['hist','Histórico']].map(function(t){return '<button type="button" data-a="tab" data-v="'+t[0]+'"'+(!S.sid&&S.tab===t[0]?' aria-current="page"':'')+'>'+t[1]+'</button>'}).join('');
+ document.getElementById('tabs').innerHTML=[['treino','Treino'],['evo','Evolução'],['body','Medidas'],['hist','Histórico']].map(function(t){return '<button type="button" data-a="tab" data-v="'+t[0]+'"'+(!S.sid&&!S.mid&&S.tab===t[0]?' aria-current="page"':'')+'>'+t[1]+'</button>'}).join('');
  window.scrollTo(0,view===S.view?y:0);S.view=view}
 
 /* ---------- cronômetro, aviso, tela ligada ---------- */
@@ -443,7 +557,7 @@ function pickEx(id){
 /* ---------- backup ---------- */
 function csvCell(v){v=String(v==null?'':v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}
 function saveFile(name,data,type,isBackup){try{var bl=new Blob([data],{type:type}),u=URL.createObjectURL(bl),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},5000);if(isBackup){S.cfg.lastBackup=Date.now();Store.saveCfg()}toast('Arquivo salvo em Downloads');if(isBackup&&!S.sid&&S.tab==='hist')render()}catch(e){toast('Não consegui salvar o arquivo')}}
-function exportJson(){saveFile('diario-de-carga-'+todayStr()+'.json',JSON.stringify({versao:1,cfg:S.cfg,sessions:sorted()},null,1),'application/json',true)}
+function exportJson(){saveFile('diario-de-carga-'+todayStr()+'.json',JSON.stringify({versao:2,cfg:S.cfg,sessions:sorted(),body:bodySorted()},null,1),'application/json',true)}
 function exportCsv(){
  var L=['data;inicio;fim;treino;exercicio;grupo;serie;tipo;carga_kg;reps;concluida;nota'];
  sorted().forEach(function(s){s.ord.forEach(function(id){var en=s.ex[id];en.s.forEach(function(x,i){L.push([s.date,s.start,s.end,s.dn,en.n,en.g,i+1,x.t==='a'?'aquecimento':x.t==='f'?'falha':'valida',x.w,x.r,x.d?'sim':'nao',en.o].map(csvCell).join(';'))})});
@@ -453,7 +567,9 @@ function importFile(f){
  var rd=new FileReader();rd.onload=function(){try{var o=JSON.parse(rd.result);if(!o||!Array.isArray(o.sessions))throw 0;var n=0;
   if(o.cfg&&o.cfg.custom){S.cfg.custom=Object.assign({},S.cfg.custom,o.cfg.custom);Store.saveCfg()}
   o.sessions.forEach(function(s){if(s&&s.id&&s.ex&&Array.isArray(s.ord)){S.sessions[s.id]=s;Store.saveSession(s.id);n++}});
-  toast(n+' treino'+(n===1?'':'s')+' importado'+(n===1?'':'s'));render()}catch(e){toast('Arquivo de backup inválido')}};
+  var m=0;(Array.isArray(o.body)?o.body:[]).forEach(function(e){if(e&&e.id&&e.date&&e.v&&typeof e.v==='object'){S.body[e.id]=e;Store.saveSession(e.id);m++}});
+  var pt=[];if(n)pt.push(n+(n===1?' treino':' treinos'));if(m)pt.push(m+(m===1?' medição':' medições'));
+  toast('Importado: '+(pt.join(' e ')||'nada novo'));render()}catch(e){toast('Arquivo de backup inválido')}};
  rd.readAsText(f)}
 
 /* ---------- eventos ---------- */
@@ -461,7 +577,7 @@ document.addEventListener('click',function(e){
  var el=e.target.closest('[data-a]');if(!el)return;
  if(el.classList.contains('sheet')&&e.target!==el)return;
  var a=el.dataset.a,s=S.sessions[S.sid],id=el.dataset.ex,i=+el.dataset.i,en=s&&id?s.ex[id]:null;
- if(a!=='rm'&&a!=='delsess'&&S.cf){S.cf=null}
+ if(a!=='rm'&&a!=='delsess'&&a!=='delbody'&&S.cf){S.cf=null}
  switch(a){
  case 'tab':S.tab=el.dataset.v;leaveSession();break;
  case 'prog':S.cfg.program=el.dataset.v;Store.saveCfg();render();break;
@@ -493,11 +609,18 @@ document.addEventListener('click',function(e){
  case 'wk':S.ev.off=Math.min(0,S.ev.off+(+el.dataset.v));render();break;
  case 'delsess':{var k='ds:'+el.dataset.id;if(S.cf===k){S.cf=null;delete S.sessions[el.dataset.id];Store.del(el.dataset.id)}else S.cf=k;render();break}
  case 'exjson':exportJson();break;
+ case 'exbody':exportBodyCsv();break;
+ case 'newbody':{var nid='m'+Date.now().toString(36)+Math.random().toString(36).slice(2,4);S.body[nid]={id:nid,date:todayStr(),ts:Date.now(),v:{}};enterBody(nid);break}
+ case 'openbody':enterBody(el.dataset.id);break;
+ case 'delbody':{var bk='bd:'+el.dataset.id;if(S.cf===bk){S.cf=null;delete S.body[el.dataset.id];Store.del(el.dataset.id);toast('Medição apagada');leaveSession()}else{S.cf=bk;render()}break}
+ case 'bcmp':S.bcmp=el.dataset.v;render();break;
+ case 'remind':S.cfg.remind=+el.dataset.v;Store.saveCfg();render();break;
  case 'excsv':exportCsv();break;
  }
 });
 document.addEventListener('input',function(e){
  var el=e.target,f=el.dataset&&el.dataset.f;if(el.id==='sq'){sheetList();return}if(!f)return;
+ if(f==='bf'||f==='bdate'){var be=S.body[S.mid];if(!be)return;if(f==='bdate'){if(!el.value)return;be.date=el.value}else{var bk2=el.dataset.k,bx=parseFloat(String(el.value).replace(',','.'));if(isFinite(bx))be.v[bk2]=bx;else delete be.v[bk2]}be.ts=Date.now();Store.saveSession(be.id);return}
  var s=S.sessions[S.sid];if(!s)return;
  if(f==='w'||f==='r'){s.ex[el.dataset.ex].s[+el.dataset.i][f]=el.value;touch(s)}
  else if(f==='note'){s.ex[el.dataset.ex].o=el.value;touch(s)}
@@ -507,9 +630,10 @@ document.addEventListener('input',function(e){
 document.addEventListener('change',function(e){
  var el=e.target,f=el.dataset&&el.dataset.f;if(!f)return;
  if(f==='evsel'){S.ev.ex=el.value;render()}
+ else if(f==='bsel'){S.bsel=el.value;render()}
  else if(f==='import'&&el.files&&el.files[0]){importFile(el.files[0]);el.value=''}
 });
-window.addEventListener('popstate',function(){if(S.sid){S.sid=null;closeSheet();render()}});
+window.addEventListener('popstate',function(){if(S.sid||S.mid){cleanBody();S.sid=null;S.mid=null;closeSheet();render()}});
 document.addEventListener('visibilitychange',function(){if(document.hidden)Store.flush();else if(S.sid)lockScreen()});
 window.addEventListener('pagehide',function(){Store.flush()});
 
@@ -517,8 +641,9 @@ window.addEventListener('pagehide',function(){Store.flush()});
 (async function boot(){
  await Store.init();
  var d=await Store.load();
- S.cfg=Object.assign({program:'p5',custom:{},rest:90},d.cfg||{});if(!S.cfg.custom)S.cfg.custom={};
+ S.cfg=Object.assign({program:'p5',custom:{},rest:90,remind:4},d.cfg||{});if(!S.cfg.custom)S.cfg.custom={};
  S.sessions=d.sessions||{};
+ S.body=d.body||{};Object.keys(S.body).forEach(function(k){var e=S.body[k];if(!e||!e.v||!Object.keys(e.v).length)delete S.body[k]});
  render();
  if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){})}
 })();
