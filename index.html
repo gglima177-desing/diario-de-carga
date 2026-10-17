@@ -217,7 +217,7 @@ select.big{width:100%;height:48px;border:1px solid var(--line);border-radius:10p
 <div id="sheet"></div>
 <nav class="tabbar" id="tabs" aria-label="Seções"></nav>
 
-<script src="exercicios.js"></script>
+<script src="exercicios.js?v=8"></script>
 <script>
 (function(){
 'use strict';
@@ -458,7 +458,8 @@ function renderHist(){
  h+=all.map(function(s){var k='ds:'+s.id;return '<div class="hrow"><button type="button" class="op" data-a="open" data-id="'+s.id+'"><h2>'+esc(s.dn)+'</h2><div class="meta">'+esc(fmtD(s.date))+(s.start?' · '+esc(s.start)+(s.end?'–'+esc(s.end):''):'')+(dur(s)?' · '+dur(s):'')+(s.ord.length?' · '+totalValid(s)+(totalValid(s)===1?' série válida':' séries válidas'):'')+(cdText(s)?' · '+esc(cdText(s)):'')+'</div></button><div>'+(s.fin?'':'<span class="tag live">Aberto</span> ')+'<button type="button" class="link warn" data-a="delsess" data-id="'+s.id+'">'+(S.cf===k?'Confirmar':'Apagar')+'</button></div></div>'}).join('');
  h+='<section class="sec"><span class="lbl">Backup</span><div class="card"><p class="small" style="margin-top:0">'+'Seus treinos ficam só neste aparelho e funcionam sem internet. Se você limpar os dados do navegador ou desinstalar o app, o histórico some. Por isso exporte o backup de vez em quando.'+(S.cfg.lastBackup?' Último backup: '+esc(fmtShort(new Date(S.cfg.lastBackup).getFullYear()+'-'+p2(new Date(S.cfg.lastBackup).getMonth()+1)+'-'+p2(new Date(S.cfg.lastBackup).getDate())))+'.':' Você ainda não fez nenhum backup.')+'</p><div class="row" style="margin-top:10px">'
  +(Store.dl?'<button type="button" class="btn ghost sm" data-a="exjson">Backup (JSON)</button><button type="button" class="btn ghost sm" data-a="excsv">Treinos (CSV)</button><button type="button" class="btn ghost sm" data-a="exbody">Medidas (CSV)</button>':'')
- +'<label class="btn ghost sm">Importar backup<input class="vh" type="file" accept=".json,application/json" data-f="import"></label></div></div></section>';
+ +'<label class="btn ghost sm">Importar backup<input class="vh" type="file" accept=".json,application/json" data-f="import"></label></div></div></section>'
+ +'<section class="sec"><span class="lbl">Aplicativo</span><div class="card"><p class="small" style="margin-top:0">Se algo não abrir ou parecer desatualizado, toque abaixo com internet ligada. Seus treinos e medidas não são apagados.</p><button type="button" class="btn ghost sm" data-a="hard">Atualizar app</button></div></section>';
  return h}
 
 /* ---------- render ---------- */
@@ -627,6 +628,7 @@ function openSheet(mode,ex){
  sheetList()}
 function idByName(n){var q=norm(n),r=null;catalog().forEach(function(c){if(!r&&norm(c[1])===q)r=c[0]});return r}
 function openInfo(en,exid){
+ if(!window.EXI||!EXI.subs){toast('Atualização incompleta. Use Histórico › Atualizar app');return}
  var d=EXI.get(en.n,en.g),ML=EXI.ml;
  function names(a){return a.map(function(k){return ML[k]}).join(', ')}
  var lg='<div class="lg"><span><i style="background:var(--red)"></i><b>Principal:</b> '+esc(names(d.p))+'</span>'+(d.a.length?'<span><i style="background:var(--aux)"></i><b>Auxiliares:</b> '+esc(names(d.a))+'</span>':'')+'</div>';
@@ -689,7 +691,8 @@ document.addEventListener('click',function(e){
  case 'rm':if(S.cf==='rm:'+id){S.cf=null;s.ord.splice(s.ord.indexOf(id),1);delete s.ex[id];touch(s)}else S.cf='rm:'+id;render();break;
  case 'fin':{var leave=0;if(s.fin){s.fin=0}else{s.fin=1;if(!s.end)s.end=hm();stopRest();toast('Treino salvo');S.tab='treino';leave=1}touch(s);Store.saveSession(s.id,true);if(leave)leaveSession();else render();break}
  case 'sclose':closeSheet();break;
- case 'info':if(en)openInfo(en,id);break;
+ case 'info':if(en){try{openInfo(en,id)}catch(err){toast('Não consegui abrir. Use Histórico › Atualizar app')}}break;
+ case 'hard':hardRefresh();break;
  case 'subst':{if(!el.dataset.id||!s.ex[id])break;S.sheet={mode:'swap',ex:id};pickEx(el.dataset.id);toast('Exercício trocado');break}
  case 'pick':pickEx(el.dataset.id);break;
  case 'newex':{var nm=document.getElementById('sq').value.trim();if(!nm)break;var g=document.getElementById('sg').value,nid='x-'+slug(nm);if(!CAT[nid]){S.cfg.custom=S.cfg.custom||{};S.cfg.custom[nid]=[nm,g];Store.saveCfg()}if(s.ord.indexOf(nid)>=0){toast('Esse exercício já está no treino');break}pickEx(nid);break}
@@ -729,6 +732,11 @@ document.addEventListener('visibilitychange',function(){if(document.hidden)Store
 window.addEventListener('pagehide',function(){Store.flush()});
 
 /* ---------- início ---------- */
+function showUpd(txt,fn){if(document.querySelector('.upd'))return;var b=document.createElement('button');b.type='button';b.className='upd';b.textContent=txt;b.onclick=fn;document.body.appendChild(b)}
+function hardRefresh(){try{Store.flush()}catch(e){}
+ var jobs=[];if(window.caches)jobs.push(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!=='dc-fonts'}).map(function(k){return caches.delete(k)}))}));
+ if(navigator.serviceWorker)jobs.push(navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}));
+ Promise.all(jobs).catch(function(){}).then(function(){location.reload()})}
 (async function boot(){
  await Store.init();
  var d=await Store.load();
@@ -736,12 +744,12 @@ window.addEventListener('pagehide',function(){Store.flush()});
  S.sessions=d.sessions||{};
  S.body=d.body||{};Object.keys(S.body).forEach(function(k){var e=S.body[k];if(!e||!e.v||!Object.keys(e.v).length)delete S.body[k]});
  render();
+ if(!window.EXI||EXI.v!==8)showUpd('Atualização incompleta. Toque para corrigir',hardRefresh);
  if('serviceWorker' in navigator){
   var hadCtl=!!navigator.serviceWorker.controller,shown=false;
   navigator.serviceWorker.addEventListener('controllerchange',function(){
    if(!hadCtl||shown)return;shown=true;
-   var b=document.createElement('button');b.type='button';b.className='upd';b.textContent='Nova versão disponível. Toque para atualizar';
-   b.onclick=function(){Store.flush();location.reload()};document.body.appendChild(b)});
+   showUpd('Nova versão disponível. Toque para atualizar',function(){Store.flush();location.reload()})});
   navigator.serviceWorker.register('sw.js').catch(function(){})}
 })();
 })();

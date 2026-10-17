@@ -1,10 +1,15 @@
 /* Service worker do Diário de Carga: guarda o app no aparelho para abrir sem internet. */
-const V = 'dc-v7';
+const V = 'dc-v8';
 const FONTS = 'dc-fonts';
-const CORE = ['./', 'index.html', 'exercicios.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
+const CORE = ['./', 'index.html', 'exercicios.js?v=8', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(V).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));
+  // 'reload' ignora o cache do navegador: garante arquivos novos e do mesmo lote.
+  e.waitUntil(
+    caches.open(V)
+      .then((c) => Promise.all(CORE.map((u) => fetch(new Request(u, { cache: 'reload' })).then((r) => { if (!r.ok) throw new Error(u); return c.put(u, r); }))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', (e) => {
@@ -25,7 +30,7 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
       caches.open(V).then(async (c) => {
         const hit = await c.match(req, { ignoreSearch: true });
-        const net = fetch(req).then((r) => { if (r && r.ok) c.put(req, r.clone()); return r; }).catch(() => null);
+        const net = fetch(req, { cache: 'no-cache' }).then((r) => { if (r && r.ok) c.put(req, r.clone()); return r; }).catch(() => null);
         if (hit) { e.waitUntil(net); return hit; }
         const r = await net;
         if (r) return r;
