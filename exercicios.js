@@ -229,6 +229,46 @@ function cut(s){return s?s.split(','):[]}
 var BY={};
 RAW.forEach(function(l){var p=l.split('|');BY[nrm(p[0])]={p:cut(p[1]),a:cut(p[2]),t:p[3].split(';'),e:p[4]}});
 
+
+/* ---------- famílias de substituição: cada lista reúne exercícios que cumprem o mesmo papel, do mais parecido ao menos ---------- */
+var FAM=[
+ ['Supino reto na máquina','Supino reto com halteres','Supino reto com barra','Supino reto na polia','Flexão de braço'],
+ ['Supino inclinado com halteres','Supino inclinado com barra','Supino inclinado na máquina','Crucifixo inclinado com halteres','Crucifixo na polia baixa'],
+ ['Supino declinado na polia','Supino declinado com barra','Supino declinado com halteres','Supino declinado na máquina','Crossover na polia alta','Mergulho nas paralelas (peito)'],
+ ['Crucifixo','Crucifixo na polia','Crucifixo na máquina (peck deck)','Crossover na polia média','Crucifixo inclinado com halteres','Crucifixo na polia baixa','Crossover na polia alta','Pullover com halter (peito)'],
+ ['Puxada alta','Puxada pela frente pegada aberta','Puxada com triângulo','Puxada supinada','Puxada unilateral na polia','Barra fixa pegada aberta','Barra fixa supinada'],
+ ['Remada','Remada sentada na máquina','Remada baixa com triângulo','Remada na máquina articulada','Remada unilateral ou baixa','Remada unilateral na polia','Remada serrote (unilateral com halter)'],
+ ['Remada curvada com barra','Remada Pendlay','Remada cavalinho (barra T)','Remada serrote (unilateral com halter)','Remada na máquina articulada','Remada'],
+ ['Pullover na polia','Pulldown com braços estendidos','Pullover com halter (costas)'],
+ ['Encolhimento com halteres','Encolhimento com barra','Remada alta na polia','Face pull na corda'],
+ ['Agachamento no Smith','Agachamento livre','Agachamento frontal','Agachamento hack','Agachamento pendular','Rack','Agachamento goblet','Leg 45'],
+ ['Leg 45','Leg press horizontal','Leg press 45° unilateral','Agachamento hack','Agachamento no Smith'],
+ ['Agachamento búlgaro','Afundo com halteres','Passada andando','Avanço no Smith','Subida no banco (step-up)','Agachamento sumô'],
+ ['Cadeira extensora','Cadeira extensora unilateral','Sissy squat','Agachamento hack'],
+ ['Cadeira flexora','Mesa flexora','Flexora unilateral','Flexora unilateral em pé','Flexora em pé na máquina','Flexora na polia','Mesa flexora unilateral','Cadeira flexora unilateral','Mesa flexora nórdica (nordic curl)'],
+ ['Stiff','Stiff com barra','Stiff com halteres','Stiff unilateral','Stiff no Smith','Levantamento terra romeno','Bom dia (good morning)','Levantamento terra convencional','Levantamento terra sumô','Hiperextensão lombar'],
+ ['Elevação pélvica com barra','Elevação pélvica na máquina','Extensão de quadril na polia','Glúteo na máquina (coice)','Agachamento búlgaro','Levantamento terra sumô'],
+ ['Elevação lateral na polia','Elevação lateral na máquina','Elevação lateral com halter','Elevação lateral','Elevação lateral sentado com halteres','Elevação lateral unilateral na polia','Elevação lateral deitado de lado','Elevação lateral por trás na polia','Remada alta pegada aberta'],
+ ['Crucifixo inverso','Crucifixo inverso na máquina','Crucifixo inverso com halteres','Crucifixo inverso na polia','Face pull na corda','Elevação posterior unilateral na polia'],
+ ['Desenvolvimento','Desenvolvimento com halteres','Desenvolvimento com barra','Desenvolvimento na máquina','Desenvolvimento no Smith','Desenvolvimento Arnold'],
+ ['Elevação frontal com halteres','Elevação frontal na polia','Elevação frontal com anilha'],
+ ['Rosca direta','Rosca direta com barra W','Rosca na polia baixa','Rosca alternada','Rosca inversa'],
+ ['Rosca Scott ou na polia','Rosca Scott com halteres','Rosca Scott na máquina','Rosca spider','Rosca concentrada'],
+ ['Rosca inclinada com halteres','Rosca inclinada na polia','Rosca bayesian na polia','Rosca spider'],
+ ['Rosca martelo','Rosca martelo na corda','Rosca martelo alternada','Rosca inversa'],
+ ['Tríceps barra na polia','Tríceps pulley com corda','Tríceps pulley com barra reta','Tríceps pulley pegada supinada','Tríceps unilateral na polia'],
+ ['Tríceps testa na corda','Tríceps testa com barra W','Tríceps testa com halteres','Tríceps francês na corda','Tríceps francês com halter'],
+ ['Tríceps francês na corda','Tríceps francês com halter','Tríceps testa na corda','Tríceps unilateral na polia','Tríceps coice com halter'],
+ ['Mergulho no banco','Mergulho nas paralelas (tríceps)','Supino fechado'],
+ ['Cadeira abdutora','Abdução de quadril na polia','Abdução em pé com caneleira','Abdução deitado de lado','Abdutora com tronco inclinado'],
+ ['Abdominal na máquina','Abdominal na polia (corda)','Abdominal supra no solo','Abdominal declinado','Abdominal remador','Roda abdominal','Prancha'],
+ ['Abdominal infra (elevação de pernas)','Elevação de pernas na barra','Abdominal oblíquo na polia']
+];
+function subs(name){
+ var k=nrm(name),out=[],seen={};seen[k]=1;
+ FAM.forEach(function(f){var i=f.map(nrm).indexOf(k);if(i<0)return;
+  f.map(function(n,j){return [Math.abs(j-i),j,n]}).filter(function(x){return x[0]>0}).sort(function(a,b){return a[0]-b[0]||a[1]-b[1]}).forEach(function(x){var q=nrm(x[2]);if(!seen[q]){seen[q]=1;out.push(x[2])}})});
+ return out.slice(0,6)}
 window.EXI={
  ml:ML,
  get:function(name,group){
@@ -236,6 +276,8 @@ window.EXI={
   var g=GRP[group]||GRP['Peito'];return {p:cut(g[0]),a:cut(g[1]),t:g[2].split(';'),e:g[3],own:false}},
  fig:fig,
  note:NOTE,
- names:Object.keys(BY)
+ names:Object.keys(BY),
+ subs:subs,
+ fam:FAM
 };
 })();

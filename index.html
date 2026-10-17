@@ -104,6 +104,8 @@ h2{font:700 22px/1.1 var(--f-display);letter-spacing:.03em;text-transform:upperc
 .info .lg i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:8px;vertical-align:-1px}
 .info h3{font:700 13px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:16px 0 6px}
 .info ol{margin:0;padding-left:20px;display:grid;gap:6px;font-size:15px;line-height:1.35}
+.info .subs button.it{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:none;padding:12px 4px;font-weight:500;font-size:15px;color:var(--ink)}
+.info .subs button.it:disabled{opacity:.5}
 .info .err{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:14px;line-height:1.35}
 
 .exh .st{font:600 14px var(--f-mono);white-space:nowrap;padding-top:2px}
@@ -623,11 +625,15 @@ function openSheet(mode,ex){
  S.sheet={mode:mode,ex:ex};
  document.getElementById('sheet').innerHTML='<div class="sheet" data-a="sclose"><div class="panel" role="dialog" aria-label="Escolher exercício"><header><h2>'+(mode==='swap'?'Trocar exercício':'Adicionar exercício')+'</h2><button type="button" class="link" data-a="sclose">Fechar</button></header><input type="search" id="sq" placeholder="Buscar exercício" autocomplete="off" aria-label="Buscar exercício"><div class="plist" id="sl"></div><div class="newx" id="nw" hidden><select id="sg" aria-label="Grupo muscular">'+GROUPS.map(function(g){return '<option>'+esc(g)+'</option>'}).join('')+'</select><button type="button" class="btn sm" id="nwb" data-a="newex">Criar</button></div></div></div>';
  sheetList()}
-function openInfo(en){
+function idByName(n){var q=norm(n),r=null;catalog().forEach(function(c){if(!r&&norm(c[1])===q)r=c[0]});return r}
+function openInfo(en,exid){
  var d=EXI.get(en.n,en.g),ML=EXI.ml;
  function names(a){return a.map(function(k){return ML[k]}).join(', ')}
  var lg='<div class="lg"><span><i style="background:var(--red)"></i><b>Principal:</b> '+esc(names(d.p))+'</span>'+(d.a.length?'<span><i style="background:var(--aux)"></i><b>Auxiliares:</b> '+esc(names(d.a))+'</span>':'')+'</div>';
  var body='<div class="info">'+EXI.fig(d.p,d.a)+lg+'<h3>Como executar</h3><ol>'+d.t.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ol><p class="err"><b>Erro comum:</b> '+esc(d.e)+'</p>'+(d.own?'':'<p class="small" style="margin-top:10px">'+esc(EXI.note)+'</p>')+'</div>';
+ var sb=EXI.subs(en.n),ss=S.sessions[S.sid],sh='';
+ if(sb.length){sh='<h3>Opções para substituir</h3><div class="subs">'+sb.map(function(n){var i2=idByName(n),dup=!i2||(ss&&ss.ord.indexOf(i2)>=0);return '<button type="button" class="it" data-a="subst" data-ex="'+esc(exid)+'" data-id="'+esc(i2||'')+'"'+(dup?' disabled':'')+'>'+esc(n)+(dup?' <span class="small">(já no treino)</span>':'')+'</button>'}).join('')+'</div><p class="small" style="margin-top:6px">Toque numa opção para trocar neste treino. As séries já lançadas e a nota passam para o novo exercício.</p>'}
+ body=body.replace(/<\/div>$/,sh+'</div>');
  S.sheet={mode:'info'};
  document.getElementById('sheet').innerHTML='<div class="sheet" data-a="sclose"><div class="panel" role="dialog" aria-label="Como fazer o exercício"><header><h2>'+esc(en.n)+'</h2><button type="button" class="link" data-a="sclose">Fechar</button></header><div class="plist">'+body+'</div></div></div>'}
 function closeSheet(){S.sheet=null;document.getElementById('sheet').innerHTML=''}
@@ -683,7 +689,8 @@ document.addEventListener('click',function(e){
  case 'rm':if(S.cf==='rm:'+id){S.cf=null;s.ord.splice(s.ord.indexOf(id),1);delete s.ex[id];touch(s)}else S.cf='rm:'+id;render();break;
  case 'fin':{var leave=0;if(s.fin){s.fin=0}else{s.fin=1;if(!s.end)s.end=hm();stopRest();toast('Treino salvo');S.tab='treino';leave=1}touch(s);Store.saveSession(s.id,true);if(leave)leaveSession();else render();break}
  case 'sclose':closeSheet();break;
- case 'info':if(en)openInfo(en);break;
+ case 'info':if(en)openInfo(en,id);break;
+ case 'subst':{if(!el.dataset.id||!s.ex[id])break;S.sheet={mode:'swap',ex:id};pickEx(el.dataset.id);toast('Exercício trocado');break}
  case 'pick':pickEx(el.dataset.id);break;
  case 'newex':{var nm=document.getElementById('sq').value.trim();if(!nm)break;var g=document.getElementById('sg').value,nid='x-'+slug(nm);if(!CAT[nid]){S.cfg.custom=S.cfg.custom||{};S.cfg.custom[nid]=[nm,g];Store.saveCfg()}if(s.ord.indexOf(nid)>=0){toast('Esse exercício já está no treino');break}pickEx(nid);break}
  case 'cardio':{var c=cdOf(s);c.on=c.on?0:1;touch(s);render();break}
