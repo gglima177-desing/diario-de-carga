@@ -1,7 +1,7 @@
 /* Service worker do Diário de Carga: guarda o app no aparelho para abrir sem internet. */
-const V = 'dc-v5';
+const V = 'dc-v6';
 const FONTS = 'dc-fonts';
-const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
+const CORE = ['./', 'index.html', 'exercicios.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(V).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));

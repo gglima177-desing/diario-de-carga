@@ -21,7 +21,7 @@
 :root{
   --bg:#E8EAE4; --surface:#F4F5F0; --surface2:#DADED5; --ink:#15181A; --muted:#566059; --line:#C6CBC1;
   --red:#C8261E; --on-red:#FFFFFF; --blue:#2457B8; --on-blue:#FFFFFF; --green:#2C8A4B; --on-green:#FFFFFF;
-  --yellow:#E0A91B; --on-yellow:#15181A; --on-ink:#F4F5F0; --chart:#2457B8; --ok-t:#1F6B39; --bad-t:#B3201A;
+  --yellow:#E0A91B; --on-yellow:#15181A; --on-ink:#F4F5F0; --chart:#2457B8; --ok-t:#1F6B39; --bad-t:#B3201A; --aux:#E08A1E;
   --f-display:'Big Shoulders Display','Arial Narrow','Roboto Condensed',sans-serif-condensed,Impact,sans-serif;
   --f-body:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
   --f-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
@@ -30,13 +30,13 @@
   :root:not([data-theme="light"]){
     --bg:#0F1112; --surface:#171A1B; --surface2:#222627; --ink:#ECEEE8; --muted:#9BA49D; --line:#2C3233;
     --red:#F0645A; --on-red:#0F1112; --blue:#78A1FF; --on-blue:#0F1112; --green:#52C27A; --on-green:#0F1112;
-    --yellow:#F0C14B; --on-yellow:#0F1112; --on-ink:#0F1112; --chart:#78A1FF; --ok-t:#52C27A; --bad-t:#F0645A; color-scheme:dark;
+    --yellow:#F0C14B; --on-yellow:#0F1112; --on-ink:#0F1112; --chart:#78A1FF; --ok-t:#52C27A; --bad-t:#F0645A; --aux:#F0A04B; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0F1112; --surface:#171A1B; --surface2:#222627; --ink:#ECEEE8; --muted:#9BA49D; --line:#2C3233;
   --red:#F0645A; --on-red:#0F1112; --blue:#78A1FF; --on-blue:#0F1112; --green:#52C27A; --on-green:#0F1112;
-  --yellow:#F0C14B; --on-yellow:#0F1112; --on-ink:#0F1112; --chart:#78A1FF; --ok-t:#52C27A; --bad-t:#F0645A; color-scheme:dark;
+  --yellow:#F0C14B; --on-yellow:#0F1112; --on-ink:#0F1112; --chart:#78A1FF; --ok-t:#52C27A; --bad-t:#F0645A; --aux:#F0A04B; color-scheme:dark;
 }
 html{color-scheme:light;-webkit-tap-highlight-color:transparent}
 :root{padding-top:env(safe-area-inset-top,0px)}
@@ -93,6 +93,19 @@ h2{font:700 22px/1.1 var(--f-display);letter-spacing:.03em;text-transform:upperc
 .ex.ok{border-color:var(--green)}
 .exh{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
 .exh h2{font-size:20px;line-height:1.1}
+.ib{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;margin-left:6px;vertical-align:2px;border:1.5px solid var(--muted);border-radius:50%;background:none;color:var(--muted);font:700 12px var(--f-mono);padding:0}
+.info .fig{width:100%;max-width:320px;display:block;margin:0 auto}
+.info .fig .mz{fill:none;stroke:var(--line);stroke-width:.7}
+.info .fig .mp{fill:var(--red);fill-opacity:.85;stroke:var(--red);stroke-width:.8}
+.info .fig .ma{fill:var(--aux);fill-opacity:.85;stroke:var(--aux);stroke-width:.8}
+.info .fig .bo{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-linejoin:round;stroke-linecap:round}
+.info .fig text{font:500 10px var(--f-mono);fill:var(--muted)}
+.info .lg{display:grid;gap:6px;margin:10px 0 4px;font-size:14px}
+.info .lg i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:8px;vertical-align:-1px}
+.info h3{font:700 13px var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:16px 0 6px}
+.info ol{margin:0;padding-left:20px;display:grid;gap:6px;font-size:15px;line-height:1.35}
+.info .err{margin-top:12px;padding:10px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:14px;line-height:1.35}
+
 .exh .st{font:600 14px var(--f-mono);white-space:nowrap;padding-top:2px}
 .prev{font:400 12px/1.5 var(--f-mono);color:var(--muted);margin:5px 0 8px}
 .cols,.set{display:grid;grid-template-columns:40px minmax(0,1fr) 12px minmax(0,1fr) 44px 30px;gap:6px;align-items:center}
@@ -202,6 +215,7 @@ select.big{width:100%;height:48px;border:1px solid var(--line);border-radius:10p
 <div id="sheet"></div>
 <nav class="tabbar" id="tabs" aria-label="Seções"></nav>
 
+<script src="exercicios.js"></script>
 <script>
 (function(){
 'use strict';
@@ -221,6 +235,22 @@ var CAT={
  'tri-fr':['Tríceps francês na corda','Tríceps'],'tri-te':['Tríceps testa na corda','Tríceps'],'tri-ba':['Tríceps barra na polia','Tríceps'],
  'abd':['Cadeira abdutora','Abdutores'],'abdom':['Abdominal na máquina','Abdômen']
 };
+/* Sugestões extras: aparecem na lista de adicionar/trocar exercício. Os exercícios do seu plano continuam como estavam. */
+var EXTRA={
+ 'Peito':['Supino reto com barra','Supino inclinado com barra','Supino inclinado na máquina','Supino declinado com barra','Supino declinado com halteres','Supino declinado na máquina','Supino reto na polia','Crucifixo na máquina (peck deck)','Crucifixo inclinado com halteres','Crucifixo na polia baixa','Crossover na polia alta','Crossover na polia média','Flexão de braço','Mergulho nas paralelas (peito)','Pullover com halter (peito)'],
+ 'Costas':['Barra fixa pegada aberta','Barra fixa supinada','Puxada pela frente pegada aberta','Puxada supinada','Puxada com triângulo','Puxada unilateral na polia','Pulldown com braços estendidos','Remada curvada com barra','Remada Pendlay','Remada cavalinho (barra T)','Remada sentada na máquina','Remada baixa com triângulo','Remada serrote (unilateral com halter)','Remada unilateral na polia','Remada na máquina articulada','Remada alta na polia','Pullover com halter (costas)','Encolhimento com halteres','Encolhimento com barra'],
+ 'Quadríceps':['Agachamento livre','Agachamento frontal','Agachamento hack','Agachamento búlgaro','Agachamento sumô','Agachamento goblet','Agachamento pendular','Leg press horizontal','Leg press 45° unilateral','Afundo com halteres','Passada andando','Avanço no Smith','Cadeira extensora unilateral','Subida no banco (step-up)','Sissy squat'],
+ 'Posterior':['Stiff com barra','Stiff com halteres','Stiff unilateral','Stiff no Smith','Flexora unilateral em pé','Flexora em pé na máquina','Flexora na polia','Mesa flexora unilateral','Cadeira flexora unilateral','Levantamento terra convencional','Levantamento terra romeno','Levantamento terra sumô','Bom dia (good morning)','Elevação pélvica com barra','Elevação pélvica na máquina','Extensão de quadril na polia','Glúteo na máquina (coice)','Hiperextensão lombar','Mesa flexora nórdica (nordic curl)'],
+ 'Ombro lateral':['Elevação lateral sentado com halteres','Elevação lateral unilateral na polia','Elevação lateral deitado de lado','Elevação lateral por trás na polia','Remada alta pegada aberta'],
+ 'Ombro posterior':['Crucifixo inverso na máquina','Crucifixo inverso com halteres','Crucifixo inverso na polia','Face pull na corda','Elevação posterior unilateral na polia'],
+ 'Ombro frontal':['Desenvolvimento com halteres','Desenvolvimento com barra','Desenvolvimento na máquina','Desenvolvimento no Smith','Desenvolvimento Arnold','Elevação frontal com halteres','Elevação frontal na polia','Elevação frontal com anilha'],
+ 'Bíceps':['Rosca direta com barra W','Rosca na polia baixa','Rosca concentrada','Rosca Scott com halteres','Rosca Scott na máquina','Rosca martelo na corda','Rosca martelo alternada','Rosca inversa','Rosca inclinada na polia','Rosca spider','Rosca bayesian na polia'],
+ 'Tríceps':['Tríceps testa com barra W','Tríceps testa com halteres','Tríceps pulley com corda','Tríceps pulley com barra reta','Tríceps pulley pegada supinada','Tríceps francês com halter','Tríceps coice com halter','Tríceps unilateral na polia','Mergulho no banco','Mergulho nas paralelas (tríceps)','Supino fechado'],
+ 'Abdutores':['Abdução de quadril na polia','Abdução em pé com caneleira','Abdução deitado de lado','Abdutora com tronco inclinado'],
+ 'Abdômen':['Abdominal supra no solo','Abdominal infra (elevação de pernas)','Elevação de pernas na barra','Abdominal na polia (corda)','Abdominal oblíquo na polia','Abdominal declinado','Abdominal remador','Prancha','Roda abdominal']
+};
+(function(){var seen={};Object.keys(CAT).forEach(function(k){seen[norm(CAT[k][0])]=1});
+ Object.keys(EXTRA).forEach(function(g){EXTRA[g].forEach(function(n){var id='e-'+slug(n);if(seen[norm(n)]||CAT[id])return;seen[norm(n)]=1;CAT[id]=[n,g]})})})();
 var LOWB=[['flex-cad',3],['flex-mesa',3],['flex-uni',3],['abd',3],['leg45',3],['ext',3],['abdom',3]];
 var PLANS={
  p5:{n:'5 dias',days:[
@@ -349,7 +379,7 @@ function exCard(s,id){
   +'<button type="button" class="ok-b'+(x.d?' on':'')+'" data-a="done" data-ex="'+id+'" data-i="'+i+'" aria-pressed="'+(x.d?'true':'false')+'" aria-label="Série concluída">✓</button>'
   +'<button type="button" class="del" data-a="delset" data-ex="'+id+'" data-i="'+i+'" aria-label="Apagar série">×</button></div>'}).join('');
  var rmKey='rm:'+id;
- return '<section class="ex'+(v>=en.t&&en.t>0?' ok':'')+'"><div class="exh"><div><h2>'+esc(en.n)+'</h2><span class="lbl">'+esc(en.g)+(pr?' · ':'')+(pr?'<span class="tag pr">Recorde</span>':'')+'</span></div><span class="st">'+v+'/'+en.t+'</span></div>'
+ return '<section class="ex'+(v>=en.t&&en.t>0?' ok':'')+'"><div class="exh"><div><h2>'+esc(en.n)+'<button type="button" class="ib" data-a="info" data-ex="'+esc(id)+'" aria-label="Como fazer: '+esc(en.n)+'">i</button></h2><span class="lbl">'+esc(en.g)+(pr?' · ':'')+(pr?'<span class="tag pr">Recorde</span>':'')+'</span></div><span class="st">'+v+'/'+en.t+'</span></div>'
  +'<p class="prev">'+(pv?'Última vez '+esc(fmtShort(pv.s.date))+': '+pv.sets.map(function(x){return esc(fmtW(x.w))+'×'+esc(x.r)}).join(' · '):'Primeira vez com este exercício.')+'</p>'
  +'<div class="cols"><span></span><span>KG</span><span></span><span>REPS</span><span></span><span></span></div>'+rows
  +'<div class="exa"><button type="button" class="btn ghost sm" data-a="addwarm" data-ex="'+id+'">+ Aquecimento</button><button type="button" class="btn ghost sm" data-a="addset" data-ex="'+id+'">+ Série</button><span class="sp"></span>'
@@ -593,6 +623,13 @@ function openSheet(mode,ex){
  S.sheet={mode:mode,ex:ex};
  document.getElementById('sheet').innerHTML='<div class="sheet" data-a="sclose"><div class="panel" role="dialog" aria-label="Escolher exercício"><header><h2>'+(mode==='swap'?'Trocar exercício':'Adicionar exercício')+'</h2><button type="button" class="link" data-a="sclose">Fechar</button></header><input type="search" id="sq" placeholder="Buscar exercício" autocomplete="off" aria-label="Buscar exercício"><div class="plist" id="sl"></div><div class="newx" id="nw" hidden><select id="sg" aria-label="Grupo muscular">'+GROUPS.map(function(g){return '<option>'+esc(g)+'</option>'}).join('')+'</select><button type="button" class="btn sm" id="nwb" data-a="newex">Criar</button></div></div></div>';
  sheetList()}
+function openInfo(en){
+ var d=EXI.get(en.n,en.g),ML=EXI.ml;
+ function names(a){return a.map(function(k){return ML[k]}).join(', ')}
+ var lg='<div class="lg"><span><i style="background:var(--red)"></i><b>Principal:</b> '+esc(names(d.p))+'</span>'+(d.a.length?'<span><i style="background:var(--aux)"></i><b>Auxiliares:</b> '+esc(names(d.a))+'</span>':'')+'</div>';
+ var body='<div class="info">'+EXI.fig(d.p,d.a)+lg+'<h3>Como executar</h3><ol>'+d.t.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ol><p class="err"><b>Erro comum:</b> '+esc(d.e)+'</p>'+(d.own?'':'<p class="small" style="margin-top:10px">'+esc(EXI.note)+'</p>')+'</div>';
+ S.sheet={mode:'info'};
+ document.getElementById('sheet').innerHTML='<div class="sheet" data-a="sclose"><div class="panel" role="dialog" aria-label="Como fazer o exercício"><header><h2>'+esc(en.n)+'</h2><button type="button" class="link" data-a="sclose">Fechar</button></header><div class="plist">'+body+'</div></div></div>'}
 function closeSheet(){S.sheet=null;document.getElementById('sheet').innerHTML=''}
 function pickEx(id){
  var s=S.sessions[S.sid],sh=S.sheet,i=info(id);
@@ -646,6 +683,7 @@ document.addEventListener('click',function(e){
  case 'rm':if(S.cf==='rm:'+id){S.cf=null;s.ord.splice(s.ord.indexOf(id),1);delete s.ex[id];touch(s)}else S.cf='rm:'+id;render();break;
  case 'fin':{var leave=0;if(s.fin){s.fin=0}else{s.fin=1;if(!s.end)s.end=hm();stopRest();toast('Treino salvo');S.tab='treino';leave=1}touch(s);Store.saveSession(s.id,true);if(leave)leaveSession();else render();break}
  case 'sclose':closeSheet();break;
+ case 'info':if(en)openInfo(en);break;
  case 'pick':pickEx(el.dataset.id);break;
  case 'newex':{var nm=document.getElementById('sq').value.trim();if(!nm)break;var g=document.getElementById('sg').value,nid='x-'+slug(nm);if(!CAT[nid]){S.cfg.custom=S.cfg.custom||{};S.cfg.custom[nid]=[nm,g];Store.saveCfg()}if(s.ord.indexOf(nid)>=0){toast('Esse exercício já está no treino');break}pickEx(nid);break}
  case 'cardio':{var c=cdOf(s);c.on=c.on?0:1;touch(s);render();break}
