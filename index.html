@@ -217,13 +217,13 @@ select.big{width:100%;height:48px;border:1px solid var(--line);border-radius:10p
 <div id="sheet"></div>
 <nav class="tabbar" id="tabs" aria-label="Seções"></nav>
 
-<script src="exercicios.js?v=8"></script>
+<script src="exercicios.js?v=9"></script>
 <script>
 (function(){
 'use strict';
 
 /* ---------- catálogo e planos ---------- */
-var GROUPS=['Peito','Costas','Quadríceps','Posterior','Ombro lateral','Ombro posterior','Ombro frontal','Bíceps','Tríceps','Abdutores','Abdômen'];
+var GROUPS=['Peito','Costas','Quadríceps','Posterior','Panturrilha','Ombro lateral','Ombro posterior','Ombro frontal','Bíceps','Tríceps','Abdutores','Abdômen'];
 var BAND=['Peito','Costas','Quadríceps','Posterior','Ombro lateral','Bíceps','Tríceps'];
 var CAT={
  'inc-halt':['Supino inclinado com halteres','Peito'],'sup-maq':['Supino reto na máquina','Peito'],'decl-pol':['Supino declinado na polia','Peito'],
@@ -235,6 +235,7 @@ var CAT={
  'post':['Crucifixo inverso','Ombro posterior'],'desenv':['Desenvolvimento','Ombro frontal'],
  'rosca-inc':['Rosca inclinada com halteres','Bíceps'],'rosca-sc':['Rosca Scott ou na polia','Bíceps'],'rosca-mart':['Rosca martelo','Bíceps'],'rosca':['Rosca direta','Bíceps'],'rosca-alt':['Rosca alternada','Bíceps'],
  'tri-fr':['Tríceps francês na corda','Tríceps'],'tri-te':['Tríceps testa na corda','Tríceps'],'tri-ba':['Tríceps barra na polia','Tríceps'],
+ 'pant-pe':['Panturrilha em pé','Panturrilha'],'pant-sen':['Panturrilha sentada','Panturrilha'],
  'abd':['Cadeira abdutora','Abdutores'],'abdom':['Abdominal na máquina','Abdômen']
 };
 /* Sugestões extras: aparecem na lista de adicionar/trocar exercício. Os exercícios do seu plano continuam como estavam. */
@@ -249,22 +250,23 @@ var EXTRA={
  'Bíceps':['Rosca direta com barra W','Rosca na polia baixa','Rosca concentrada','Rosca Scott com halteres','Rosca Scott na máquina','Rosca martelo na corda','Rosca martelo alternada','Rosca inversa','Rosca inclinada na polia','Rosca spider','Rosca bayesian na polia'],
  'Tríceps':['Tríceps testa com barra W','Tríceps testa com halteres','Tríceps pulley com corda','Tríceps pulley com barra reta','Tríceps pulley pegada supinada','Tríceps francês com halter','Tríceps coice com halter','Tríceps unilateral na polia','Mergulho no banco','Mergulho nas paralelas (tríceps)','Supino fechado'],
  'Abdutores':['Abdução de quadril na polia','Abdução em pé com caneleira','Abdução deitado de lado','Abdutora com tronco inclinado'],
+ 'Panturrilha':['Panturrilha no leg press','Panturrilha em pé no Smith','Panturrilha em pé unilateral','Panturrilha burro (donkey)','Panturrilha em pé com halteres'],
  'Abdômen':['Abdominal supra no solo','Abdominal infra (elevação de pernas)','Elevação de pernas na barra','Abdominal na polia (corda)','Abdominal oblíquo na polia','Abdominal declinado','Abdominal remador','Prancha','Roda abdominal']
 };
 (function(){var seen={};Object.keys(CAT).forEach(function(k){seen[norm(CAT[k][0])]=1});
  Object.keys(EXTRA).forEach(function(g){EXTRA[g].forEach(function(n){var id='e-'+slug(n);if(seen[norm(n)]||CAT[id])return;seen[norm(n)]=1;CAT[id]=[n,g]})})})();
-var LOWB=[['flex-cad',3],['flex-mesa',3],['flex-uni',3],['abd',3],['leg45',3],['ext',3],['abdom',3]];
+var LOWB=[['flex-cad',3],['flex-mesa',3],['flex-uni',3],['abd',3],['leg45',3],['ext',3],['pant-sen',3],['abdom',3]];
 var PLANS={
  p5:{n:'5 dias',days:[
   {id:'5a',n:'Peito · Ombro · Tríceps',items:[['inc-halt',3],['sup-maq',3],['desenv',3],['lat-pol',3],['lat-maq',3],['lat-halt',2],['decl-pol',2],['cruc',2],['tri-fr',2],['tri-te',2],['tri-ba',2]]},
-  {id:'5b',n:'Quadríceps',items:[['agach',3],['leg45',3],['rack',3],['ext',3],['flex-cad',3],['abdom',3]]},
+  {id:'5b',n:'Quadríceps',items:[['agach',3],['leg45',3],['rack',3],['ext',3],['flex-cad',3],['pant-pe',3],['abdom',3]]},
   {id:'5c',n:'Costas · Bíceps · Ombro',items:[['puxada',3],['rem',3],['rem-uni',2],['pullover',2],['post',4],['lat',3],['rosca-inc',3],['rosca-sc',3],['rosca-mart',2]]},
   {id:'5d',n:'Posterior',items:LOWB},
   {id:'5e',n:'Upper completo',items:[['puxada',3],['sup-halt',3],['rem',3],['cruc-pol',3],['lat',3],['post',3],['rosca',2],['rosca-alt',2],['tri-ba',2],['tri-fr',2]]}
  ]},
  p4:{n:'4 dias',days:[
   {id:'4a',n:'Upper A · Peito e ombro',items:[['inc-halt',3],['sup-maq',2],['cruc',2],['puxada',3],['rem',3],['desenv',3],['lat-pol',3],['lat-maq',3],['tri-fr',3],['tri-ba',2],['rosca',3]]},
-  {id:'4b',n:'Lower A · Quadríceps',items:[['agach',3],['leg45',3],['rack',3],['ext',3],['flex-cad',4],['abdom',3]]},
+  {id:'4b',n:'Lower A · Quadríceps',items:[['agach',3],['leg45',3],['rack',3],['ext',3],['flex-cad',4],['pant-pe',3],['abdom',3]]},
   {id:'4c',n:'Upper B · Costas e braços',items:[['puxada',3],['rem',3],['rem-uni',2],['sup-halt',3],['cruc-pol',2],['post',4],['lat-halt',2],['lat-pol',2],['rosca-inc',3],['rosca-sc',3],['tri-te',3]]},
   {id:'4d',n:'Lower B · Posterior',items:LOWB}
  ]}
@@ -737,14 +739,26 @@ function hardRefresh(){try{Store.flush()}catch(e){}
  var jobs=[];if(window.caches)jobs.push(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!=='dc-fonts'}).map(function(k){return caches.delete(k)}))}));
  if(navigator.serviceWorker)jobs.push(navigator.serviceWorker.getRegistrations().then(function(rs){return Promise.all(rs.map(function(r){return r.unregister()}))}));
  Promise.all(jobs).catch(function(){}).then(function(){location.reload()})}
+/* Corrige panturrilhas criadas à mão: grupo certo e mesmo exercício do plano (idempotente). */
+function migratePant(){
+ var CAN={'pant-pe':'Panturrilha em pé','pant-sen':'Panturrilha sentada'},ch=false;
+ function kind(n){var q=norm(n);if(q.indexOf('panturrilha')<0)return null;if(q.indexOf('sentad')>=0)return 'pant-sen';return /leg|smith|burro|donkey|unilateral|halter/.test(q)?'x':'pant-pe'}
+ var cu=S.cfg.custom||{};Object.keys(cu).forEach(function(id){var k=kind(cu[id][0]);if(!k)return;if(k==='x'){if(cu[id][1]!=='Panturrilha'){cu[id]=[cu[id][0],'Panturrilha'];ch=true}}else{delete cu[id];ch=true}});
+ if(ch)Store.saveCfg();
+ Object.keys(S.sessions).forEach(function(sid){var s=S.sessions[sid],mod=false;if(!s||!Array.isArray(s.ord)||!s.ex)return;
+  s.ord.slice().forEach(function(id,ix){var en=s.ex[id];if(!en)return;var k=kind(en.n);if(!k)return;
+   if(k==='x'||CAN[id]){if(en.g!=='Panturrilha'){en.g='Panturrilha';mod=true}if(CAN[id]&&en.n!==CAN[id]){en.n=CAN[id];mod=true}return}
+   if(s.ex[k])return;
+   en.n=CAN[k];en.g='Panturrilha';s.ex[k]=en;delete s.ex[id];s.ord[ix]=k;mod=true});
+  if(mod)Store.saveSession(sid)})}
 (async function boot(){
  await Store.init();
  var d=await Store.load();
  S.cfg=Object.assign({program:'p5',custom:{},rest:90,remind:4},d.cfg||{});if(!S.cfg.custom)S.cfg.custom={};
  S.sessions=d.sessions||{};
  S.body=d.body||{};Object.keys(S.body).forEach(function(k){var e=S.body[k];if(!e||!e.v||!Object.keys(e.v).length)delete S.body[k]});
- render();
- if(!window.EXI||EXI.v!==8)showUpd('Atualização incompleta. Toque para corrigir',hardRefresh);
+ migratePant();render();
+ if(!window.EXI||EXI.v!==9)showUpd('Atualização incompleta. Toque para corrigir',hardRefresh);
  if('serviceWorker' in navigator){
   var hadCtl=!!navigator.serviceWorker.controller,shown=false;
   navigator.serviceWorker.addEventListener('controllerchange',function(){

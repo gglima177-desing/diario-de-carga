@@ -191,6 +191,14 @@ var RAW=[
 'Mergulho no banco|tr|da,pe|Mãos no banco, quadril próximo a ele;Desça até ~90° nos cotovelos;Suba sem travar|Descer fundo demais, sobrecarregando o ombro',
 'Mergulho nas paralelas (tríceps)|tr|pe,da|Tronco ereto e cotovelos junto ao corpo;Desça até ~90° nos cotovelos;Suba sem travar|Inclinar o corpo à frente e virar exercício de peito',
 'Supino fechado|tr|pe,da|Pegada na largura dos ombros, cotovelos rente ao corpo;Barra desce na parte baixa do peito;Suba empurrando com o tríceps|Pegada estreita demais, que sobrecarrega o punho',
+/* PANTURRILHA */
+'Panturrilha em pé|pa||Pontas dos pés na plataforma, joelhos estendidos (sem travar);Desça o calcanhar além da plataforma para alongar bem;Suba o máximo possível e segure 1 segundo no topo|Fazer repetições curtas e rápidas, sem alongar embaixo',
+'Panturrilha sentada|pa||Joelhos a ~90° e apoio firme sobre as coxas;Desça o calcanhar até alongar e suba o máximo, com pausa no topo;Movimento lento e completo|Usar impulso e pouca amplitude',
+'Panturrilha no leg press|pa||Apoie só a ponta dos pés na parte baixa da plataforma, joelhos quase estendidos;Empurre com as pontas e volte alongando a panturrilha;Mantenha os joelhos fixos|Dobrar e esticar os joelhos em vez de mover o tornozelo',
+'Panturrilha em pé no Smith|pa||Ponta dos pés sobre um degrau, barra apoiada nos ombros;Desça o calcanhar alongando e suba o máximo;Segure 1 segundo no topo|Balançar o corpo para subir',
+'Panturrilha em pé unilateral|pa||Uma perna por vez, apoie a mão para equilibrar-se;Desça alongando o calcanhar e suba o máximo;Movimento lento e controlado|Usar a perna livre para ajudar',
+'Panturrilha burro (donkey)|pa||Quadril dobrado e apoiado, joelhos estendidos;Alongue embaixo e suba nas pontas dos pés;Segure um instante no topo|Fazer amplitude curta',
+'Panturrilha em pé com halteres|pa||Halteres ao lado do corpo, ponta dos pés num degrau;Desça alongando e suba o máximo;Pausa de 1 segundo no topo|Balançar o tronco para ajudar',
 /* ABDUTORES */
 'Abdução de quadril na polia|gm|gl|Caneleira, apoie-se firme;Leve a perna para o lado sem girar o quadril;Volte devagar|Inclinar o tronco para o lado',
 'Abdução em pé com caneleira|gm|gl|Tronco ereto, apoie-se em algo;Leve a perna para o lado, sem balançar o corpo;Controle a volta|Inclinar o tronco',
@@ -220,6 +228,7 @@ var GRP={
  'Bíceps':['bi','an','Cotovelos fixos ao lado do corpo;Suba sem balançar o tronco;Desça devagar até quase esticar','Jogar os cotovelos para a frente'],
  'Tríceps':['tr','','Cotovelos fixos e junto ao corpo;Estenda até esticar os braços;Volte devagar','Abrir os cotovelos ou usar impulso'],
  'Abdutores':['gm','gl','Quadril firme e tronco estável;Movimento controlado, sem impulso;Volte devagar','Usar impulso e deixar o peso bater'],
+ 'Panturrilha':['pa','','Alongue bem embaixo e suba o máximo nas pontas dos pés;Segure 1 segundo no topo;Descida lenta e controlada','Fazer repetições curtas e rápidas'],
  'Abdômen':['ab','ob','Contraia o abdômen antes de mover;Evite puxar o pescoço;Volte devagar','Puxar com os braços ou com o pescoço']
 };
 var NOTE='Orientação geral do grupo muscular. Ajuste a carga para manter boa técnica em todas as repetições.';
@@ -232,6 +241,8 @@ RAW.forEach(function(l){var p=l.split('|');BY[nrm(p[0])]={p:cut(p[1]),a:cut(p[2]
 
 /* ---------- famílias de substituição: cada lista reúne exercícios que cumprem o mesmo papel, do mais parecido ao menos ---------- */
 var FAM=[
+ ['Panturrilha em pé','Panturrilha em pé unilateral','Panturrilha em pé no Smith','Panturrilha em pé com halteres','Panturrilha no leg press','Panturrilha burro (donkey)','Panturrilha sentada'],
+ ['Panturrilha sentada','Panturrilha no leg press','Panturrilha em pé','Panturrilha burro (donkey)'],
  ['Supino reto na máquina','Supino reto com halteres','Supino reto com barra','Supino reto na polia','Flexão de braço'],
  ['Supino inclinado com halteres','Supino inclinado com barra','Supino inclinado na máquina','Crucifixo inclinado com halteres','Crucifixo na polia baixa'],
  ['Supino declinado na polia','Supino declinado com barra','Supino declinado com halteres','Supino declinado na máquina','Crossover na polia alta','Mergulho nas paralelas (peito)'],
@@ -270,7 +281,7 @@ function subs(name){
   f.map(function(n,j){return [Math.abs(j-i),j,n]}).filter(function(x){return x[0]>0}).sort(function(a,b){return a[0]-b[0]||a[1]-b[1]}).forEach(function(x){var q=nrm(x[2]);if(!seen[q]){seen[q]=1;out.push(x[2])}})});
  return out.slice(0,6)}
 window.EXI={
- v:8,
+ v:9,
  ml:ML,
  get:function(name,group){
   var r=BY[nrm(name)];if(r)return {p:r.p,a:r.a,t:r.t,e:r.e,own:true};

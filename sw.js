@@ -1,7 +1,7 @@
 /* Service worker do Diário de Carga: guarda o app no aparelho para abrir sem internet. */
-const V = 'dc-v8';
+const V = 'dc-v9';
 const FONTS = 'dc-fonts';
-const CORE = ['./', 'index.html', 'exercicios.js?v=8', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
+const CORE = ['./', 'index.html', 'exercicios.js?v=9', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
   // 'reload' ignora o cache do navegador: garante arquivos novos e do mesmo lote.
