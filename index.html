@@ -217,7 +217,7 @@ select.big{width:100%;height:48px;border:1px solid var(--line);border-radius:10p
 <div id="sheet"></div>
 <nav class="tabbar" id="tabs" aria-label="Seções"></nav>
 
-<script src="exercicios.js?v=9"></script>
+<script src="exercicios.js?v=10"></script>
 <script>
 (function(){
 'use strict';
@@ -228,7 +228,7 @@ var BAND=['Peito','Costas','Quadríceps','Posterior','Ombro lateral','Bíceps','
 var CAT={
  'inc-halt':['Supino inclinado com halteres','Peito'],'sup-maq':['Supino reto na máquina','Peito'],'decl-pol':['Supino declinado na polia','Peito'],
  'cruc':['Crucifixo','Peito'],'sup-halt':['Supino reto com halteres','Peito'],'cruc-pol':['Crucifixo na polia','Peito'],
- 'puxada':['Puxada alta','Costas'],'rem':['Remada','Costas'],'rem-uni':['Remada unilateral ou baixa','Costas'],'pullover':['Pullover na polia','Costas'],
+ 'puxada':['Puxada alta','Costas'],'rem':['Remada','Costas'],'rem-uni':['Remada unilateral ou baixa','Costas'],'rem-iso':['Remada iso-lateral na máquina de anilhas','Costas'],'rem-lin':['Remada linear na máquina de anilhas','Costas'],'pullover':['Pullover na polia','Costas'],
  'agach':['Agachamento no Smith','Quadríceps'],'leg45':['Leg 45','Quadríceps'],'rack':['Rack','Quadríceps'],'ext':['Cadeira extensora','Quadríceps'],
  'flex-cad':['Cadeira flexora','Posterior'],'flex-mesa':['Mesa flexora','Posterior'],'flex-uni':['Flexora unilateral','Posterior'],'stiff':['Stiff','Posterior'],
  'lat-pol':['Elevação lateral na polia','Ombro lateral'],'lat-maq':['Elevação lateral na máquina','Ombro lateral'],'lat-halt':['Elevação lateral com halter','Ombro lateral'],'lat':['Elevação lateral','Ombro lateral'],
@@ -260,14 +260,14 @@ var PLANS={
  p5:{n:'5 dias',days:[
   {id:'5a',n:'Peito · Ombro · Tríceps',items:[['inc-halt',3],['sup-maq',3],['desenv',3],['lat-pol',3],['lat-maq',3],['lat-halt',2],['decl-pol',2],['cruc',2],['tri-fr',2],['tri-te',2],['tri-ba',2]]},
   {id:'5b',n:'Quadríceps',items:[['agach',3],['leg45',3],['rack',3],['ext',3],['flex-cad',3],['pant-pe',3],['abdom',3]]},
-  {id:'5c',n:'Costas · Bíceps · Ombro',items:[['puxada',3],['e-remada-sentada-na-maquina',3],['rem-uni',2],['pullover',2],['post',4],['lat',3],['rosca-inc',3],['rosca-sc',3],['rosca-mart',2]]},
+  {id:'5c',n:'Costas · Bíceps · Ombro',items:[['puxada',3],['e-remada-sentada-na-maquina',3],['rem-iso',2],['pullover',2],['post',4],['lat',3],['rosca-inc',3],['rosca-sc',3],['rosca-mart',2]]},
   {id:'5d',n:'Posterior',items:LOWB},
-  {id:'5e',n:'Upper completo',items:[['puxada',3],['sup-halt',3],['e-remada-sentada-na-maquina',3],['cruc-pol',3],['lat',3],['post',3],['rosca',2],['rosca-alt',2],['tri-ba',2],['tri-fr',2]]}
+  {id:'5e',n:'Upper completo',items:[['puxada',3],['sup-halt',3],['rem-lin',3],['cruc-pol',3],['lat',3],['post',3],['rosca',2],['rosca-alt',2],['tri-ba',2],['tri-fr',2]]}
  ]},
  p4:{n:'4 dias',days:[
-  {id:'4a',n:'Upper A · Peito e ombro',items:[['inc-halt',3],['sup-maq',2],['cruc',2],['puxada',3],['e-remada-sentada-na-maquina',3],['desenv',3],['lat-pol',3],['lat-maq',3],['tri-fr',3],['tri-ba',2],['rosca',3]]},
+  {id:'4a',n:'Upper A · Peito e ombro',items:[['inc-halt',3],['sup-maq',2],['cruc',2],['puxada',3],['rem-lin',3],['desenv',3],['lat-pol',3],['lat-maq',3],['tri-fr',3],['tri-ba',2],['rosca',3]]},
   {id:'4b',n:'Lower A · Quadríceps',items:[['agach',3],['leg45',3],['rack',3],['ext',3],['flex-cad',4],['pant-pe',3],['abdom',3]]},
-  {id:'4c',n:'Upper B · Costas e braços',items:[['puxada',3],['e-remada-sentada-na-maquina',3],['rem-uni',2],['sup-halt',3],['cruc-pol',2],['post',4],['lat-halt',2],['lat-pol',2],['rosca-inc',3],['rosca-sc',3],['tri-te',3]]},
+  {id:'4c',n:'Upper B · Costas e braços',items:[['puxada',3],['e-remada-sentada-na-maquina',3],['rem-iso',2],['sup-halt',3],['cruc-pol',2],['post',4],['lat-halt',2],['lat-pol',2],['rosca-inc',3],['rosca-sc',3],['tri-te',3]]},
   {id:'4d',n:'Lower B · Posterior',items:LOWB}
  ]}
 };
@@ -758,7 +758,7 @@ function migratePant(){
  S.sessions=d.sessions||{};
  S.body=d.body||{};Object.keys(S.body).forEach(function(k){var e=S.body[k];if(!e||!e.v||!Object.keys(e.v).length)delete S.body[k]});
  migratePant();render();
- if(!window.EXI||EXI.v!==9)showUpd('Atualização incompleta. Toque para corrigir',hardRefresh);
+ if(!window.EXI||EXI.v!==10)showUpd('Atualização incompleta. Toque para corrigir',hardRefresh);
  if('serviceWorker' in navigator){
   var hadCtl=!!navigator.serviceWorker.controller,shown=false;
   navigator.serviceWorker.addEventListener('controllerchange',function(){

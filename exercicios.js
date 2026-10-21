@@ -87,6 +87,8 @@ var RAW=[
 'Pullover com halter (costas)|la|pe,tr|Deitado, halter com as duas mãos acima do peito;Desça atrás da cabeça, cotovelos levemente dobrados;Volte em arco sentindo o dorsal|Arquear a lombar demais na descida',
 'Encolhimento com halteres|tp|an,ro|Braços estendidos ao lado do corpo;Suba os ombros em direção às orelhas, sem girar;Segure um instante no alto e desça devagar|Fazer círculos com os ombros',
 'Encolhimento com barra|tp|an,ro|Barra na frente do corpo, braços retos;Suba os ombros direto para cima;Segure um instante e desça controlado|Dobrar os cotovelos para ajudar',
+'Remada iso-lateral na máquina de anilhas|la,ro|bi,dp,tp|Ajuste o assento para as manoplas ficarem na altura do meio do peito;Cada braço trabalha de forma independente: puxe os cotovelos para trás, rente ao corpo;Aperte as escápulas no final e volte devagar, alongando as costas|Girar o tronco para ajudar o lado mais fraco',
+'Remada linear na máquina de anilhas|la,ro|bi,dp,tp|Apoie o peito na almofada e firme os pés na plataforma;Puxe as manoplas levando os cotovelos em direção ao quadril;Junte as escápulas no final e volte devagar, sem soltar a carga|Tirar o peito da almofada e usar impulso do tronco',
 /* QUADRÍCEPS */
 'Agachamento no Smith|qu|gl,ad|Pés um pouco à frente da barra, costas apoiadas na posição neutra;Desça até as coxas ficarem pelo menos paralelas ao chão;Joelhos acompanham a direção dos pés|Deixar os calcanhares saírem do chão',
 'Leg 45|qu|gl,ad|Pés na largura dos ombros, costas e quadril apoiados;Desça até ~90° nos joelhos sem o quadril descolar;Empurre pelo meio do pé, sem travar os joelhos|Deixar o quadril levantar do banco no fundo',
@@ -248,8 +250,8 @@ var FAM=[
  ['Supino declinado na polia','Supino declinado com barra','Supino declinado com halteres','Supino declinado na máquina','Crossover na polia alta','Mergulho nas paralelas (peito)'],
  ['Crucifixo','Crucifixo na polia','Crucifixo na máquina (peck deck)','Crossover na polia média','Crucifixo inclinado com halteres','Crucifixo na polia baixa','Crossover na polia alta','Pullover com halter (peito)'],
  ['Puxada alta','Puxada pela frente pegada aberta','Puxada com triângulo','Puxada supinada','Puxada unilateral na polia','Barra fixa pegada aberta','Barra fixa supinada'],
- ['Remada','Remada sentada na máquina','Remada baixa com triângulo','Remada na máquina articulada','Remada unilateral ou baixa','Remada unilateral na polia','Remada serrote (unilateral com halter)'],
- ['Remada curvada com barra','Remada Pendlay','Remada cavalinho (barra T)','Remada serrote (unilateral com halter)','Remada na máquina articulada','Remada'],
+ ['Remada','Remada sentada na máquina','Remada linear na máquina de anilhas','Remada iso-lateral na máquina de anilhas','Remada baixa com triângulo','Remada na máquina articulada','Remada unilateral ou baixa','Remada unilateral na polia','Remada serrote (unilateral com halter)'],
+ ['Remada curvada com barra','Remada Pendlay','Remada cavalinho (barra T)','Remada linear na máquina de anilhas','Remada serrote (unilateral com halter)','Remada iso-lateral na máquina de anilhas','Remada na máquina articulada','Remada'],
  ['Pullover na polia','Pulldown com braços estendidos','Pullover com halter (costas)'],
  ['Encolhimento com halteres','Encolhimento com barra','Remada alta na polia','Face pull na corda'],
  ['Agachamento no Smith','Agachamento livre','Agachamento frontal','Agachamento hack','Agachamento pendular','Rack','Agachamento goblet','Leg 45'],
@@ -281,7 +283,7 @@ function subs(name){
   f.map(function(n,j){return [Math.abs(j-i),j,n]}).filter(function(x){return x[0]>0}).sort(function(a,b){return a[0]-b[0]||a[1]-b[1]}).forEach(function(x){var q=nrm(x[2]);if(!seen[q]){seen[q]=1;out.push(x[2])}})});
  return out.slice(0,6)}
 window.EXI={
- v:9,
+ v:10,
  ml:ML,
  get:function(name,group){
   var r=BY[nrm(name)];if(r)return {p:r.p,a:r.a,t:r.t,e:r.e,own:true};
