@@ -757,13 +757,25 @@ function migratePant(){
    if(s.ex[k])return;
    en.n=CAN[k];en.g='Panturrilha';s.ex[k]=en;delete s.ex[id];s.ord[ix]=k;mod=true});
   if(mod)Store.saveSession(sid)})}
+/* Unifica exercícios criados à mão com os do catálogo (mesmo nome em outra grafia), mantendo o histórico. */
+function migrateAlias(){
+ var R=[{re:/pendul/,id:'e-agachamento-pendular',n:'Agachamento pendular',g:'Quadríceps'},
+        {re:/v-?\s?squat|agachamento (em )?v\b/,id:'v-squat',n:'Agachamento em V (V-squat)',g:'Quadríceps'}];
+ function rule(name){var q=norm(name),r=null;R.forEach(function(x){if(!r&&x.re.test(q))r=x});return r}
+ var ch=false,cu=S.cfg.custom||{};
+ Object.keys(cu).forEach(function(id){var r=rule(cu[id][0]);if(r&&id!==r.id){delete cu[id];ch=true}});
+ if(ch)Store.saveCfg();
+ Object.keys(S.sessions).forEach(function(sid){var s=S.sessions[sid],mod=false;if(!s||!Array.isArray(s.ord)||!s.ex)return;
+  s.ord.slice().forEach(function(id,ix){var en=s.ex[id];if(!en||id===undefined)return;var r=rule(en.n);if(!r||id===r.id||s.ex[r.id])return;
+   en.n=r.n;en.g=r.g;s.ex[r.id]=en;delete s.ex[id];s.ord[ix]=r.id;mod=true});
+  if(mod)Store.saveSession(sid)})}
 (async function boot(){
  await Store.init();
  var d=await Store.load();
  S.cfg=Object.assign({program:'p5',custom:{},rest:90,remind:4},d.cfg||{});if(!S.cfg.custom)S.cfg.custom={};
  S.sessions=d.sessions||{};
  S.body=d.body||{};Object.keys(S.body).forEach(function(k){var e=S.body[k];if(!e||!e.v||!Object.keys(e.v).length)delete S.body[k]});
- migratePant();render();
+ migratePant();migrateAlias();render();
  if(!window.EXI||EXI.v!==11)showUpd('Atualização incompleta. Toque para corrigir',hardRefresh);
  if('serviceWorker' in navigator){
   var hadCtl=!!navigator.serviceWorker.controller,shown=false;
