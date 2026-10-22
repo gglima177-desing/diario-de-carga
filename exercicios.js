@@ -100,7 +100,8 @@ var RAW=[
 'Agachamento búlgaro|qu,gl|ad,po|Pé de trás apoiado no banco, tronco levemente inclinado;Desça controlado até o joelho da frente formar ~90°;Empurre pelo calcanhar da perna da frente|Apoiar o peso na perna de trás',
 'Agachamento sumô|ad,qu|gl|Pés bem abertos, pontas levemente para fora;Desça mantendo o tronco ereto e joelhos na direção dos pés;Suba apertando o glúteo|Deixar os joelhos fecharem',
 'Agachamento goblet|qu|gl,ab|Halter junto ao peito, cotovelos apontando para baixo;Desça com o tronco ereto, calcanhares no chão;Suba empurrando o chão|Inclinar o tronco à frente',
-'Agachamento pendular|qu|gl|Costas apoiadas e pés na posição da máquina;Desça controlado até a amplitude confortável;Suba sem travar os joelhos|Descer rápido e perder o controle',
+'Agachamento pendular|qu|gl,po,pa|Ombros sob as almofadas, costas apoiadas e pés um pouco à frente na plataforma;Desça em arco, joelhos na direção dos pés, até ~90° ou mais, sem o quadril descolar;Empurre pelo meio do pé até quase esticar, sem travar os joelhos|Deixar o calcanhar levantar ou os joelhos caírem para dentro',
+'Agachamento em V (V-squat)|qu,gl|po,pa,ad|Ombros sob as almofadas e tronco firme no apoio;Pés na largura dos ombros, pontas levemente para fora e joelhos na direção dos pés;Desça controlado até ~90° e suba empurrando pelos calcanhares, apertando o glúteo no topo, sem travar os joelhos|Deixar os joelhos fecharem ou tirar os calcanhares da plataforma',
 'Leg press horizontal|qu|gl,ad|Costas e quadril colados no encosto;Desça até ~90° sem o quadril descolar;Empurre pelo meio do pé, sem travar os joelhos|Levantar o quadril no fundo da descida',
 'Leg press 45° unilateral|qu|gl|Um pé por vez, quadril encostado e reto;Desça até ~90° mantendo o joelho alinhado ao pé;Empurre sem travar o joelho|Deixar o joelho cair para dentro',
 'Afundo com halteres|qu,gl|ad,po|Passo largo, tronco ereto e olhar à frente;Desça até os dois joelhos formarem ~90°;Empurre pelo calcanhar da perna da frente|Passo curto demais, levando o joelho muito à frente',
@@ -254,8 +255,8 @@ var FAM=[
  ['Remada curvada com barra','Remada Pendlay','Remada cavalinho (barra T)','Remada linear na máquina de anilhas','Remada serrote (unilateral com halter)','Remada iso-lateral na máquina de anilhas','Remada na máquina articulada','Remada'],
  ['Pullover na polia','Pulldown com braços estendidos','Pullover com halter (costas)'],
  ['Encolhimento com halteres','Encolhimento com barra','Remada alta na polia','Face pull na corda'],
- ['Agachamento no Smith','Agachamento livre','Agachamento frontal','Agachamento hack','Agachamento pendular','Rack','Agachamento goblet','Leg 45'],
- ['Leg 45','Leg press horizontal','Leg press 45° unilateral','Agachamento hack','Agachamento no Smith'],
+ ['Agachamento no Smith','Agachamento livre','Agachamento frontal','Agachamento hack','Agachamento pendular','Agachamento em V (V-squat)','Rack','Agachamento goblet','Leg 45'],
+ ['Leg 45','Leg press horizontal','Leg press 45° unilateral','Agachamento hack','Agachamento em V (V-squat)','Agachamento no Smith'],
  ['Agachamento búlgaro','Afundo com halteres','Passada andando','Avanço no Smith','Subida no banco (step-up)','Agachamento sumô'],
  ['Cadeira extensora','Cadeira extensora unilateral','Sissy squat','Agachamento hack'],
  ['Cadeira flexora','Mesa flexora','Flexora unilateral','Flexora unilateral em pé','Flexora em pé na máquina','Flexora na polia','Mesa flexora unilateral','Cadeira flexora unilateral','Mesa flexora nórdica (nordic curl)'],
@@ -283,7 +284,7 @@ function subs(name){
   f.map(function(n,j){return [Math.abs(j-i),j,n]}).filter(function(x){return x[0]>0}).sort(function(a,b){return a[0]-b[0]||a[1]-b[1]}).forEach(function(x){var q=nrm(x[2]);if(!seen[q]){seen[q]=1;out.push(x[2])}})});
  return out.slice(0,6)}
 window.EXI={
- v:10,
+ v:11,
  ml:ML,
  get:function(name,group){
   var r=BY[nrm(name)];if(r)return {p:r.p,a:r.a,t:r.t,e:r.e,own:true};
