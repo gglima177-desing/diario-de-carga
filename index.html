@@ -217,7 +217,7 @@ select.big{width:100%;height:48px;border:1px solid var(--line);border-radius:10p
 <div id="sheet"></div>
 <nav class="tabbar" id="tabs" aria-label="Seções"></nav>
 
-<script src="exercicios.js?v=11"></script>
+<script src="exercicios.js?v=12"></script>
 <script>
 (function(){
 'use strict';
@@ -252,7 +252,7 @@ var EXTRA={
  'Tríceps':['Tríceps testa com barra W','Tríceps testa com halteres','Tríceps pulley com corda','Tríceps pulley com barra reta','Tríceps pulley pegada supinada','Tríceps francês com halter','Tríceps coice com halter','Tríceps unilateral na polia','Mergulho no banco','Mergulho nas paralelas (tríceps)','Supino fechado'],
  'Abdutores':['Abdução de quadril na polia','Abdução em pé com caneleira','Abdução deitado de lado','Abdutora com tronco inclinado'],
  'Panturrilha':['Panturrilha no leg press','Panturrilha em pé no Smith','Panturrilha em pé unilateral','Panturrilha burro (donkey)','Panturrilha em pé com halteres'],
- 'Abdômen':['Abdominal supra no solo','Abdominal infra (elevação de pernas)','Elevação de pernas na barra','Abdominal na polia (corda)','Abdominal oblíquo na polia','Abdominal declinado','Abdominal remador','Prancha','Roda abdominal']
+ 'Abdômen':['Abdominal supra no solo','Abdominal infra na máquina','Abdominal infra (elevação de pernas)','Elevação de pernas na barra','Abdominal na polia (corda)','Abdominal oblíquo na polia','Abdominal declinado','Abdominal remador','Prancha','Roda abdominal']
 };
 (function(){var seen={};Object.keys(CAT).forEach(function(k){seen[norm(CAT[k][0])]=1});
  Object.keys(EXTRA).forEach(function(g){EXTRA[g].forEach(function(n){var id='e-'+slug(n);if(seen[norm(n)]||CAT[id])return;seen[norm(n)]=1;CAT[id]=[n,g]})})})();
@@ -776,7 +776,7 @@ function migrateAlias(){
  S.sessions=d.sessions||{};
  S.body=d.body||{};Object.keys(S.body).forEach(function(k){var e=S.body[k];if(!e||!e.v||!Object.keys(e.v).length)delete S.body[k]});
  migratePant();migrateAlias();render();
- if(!window.EXI||EXI.v!==11)showUpd('Atualização incompleta. Toque para corrigir',hardRefresh);
+ if(!window.EXI||EXI.v!==12)showUpd('Atualização incompleta. Toque para corrigir',hardRefresh);
  if('serviceWorker' in navigator){
   var hadCtl=!!navigator.serviceWorker.controller,shown=false;
   navigator.serviceWorker.addEventListener('controllerchange',function(){

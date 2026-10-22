@@ -209,6 +209,7 @@ var RAW=[
 'Abdutora com tronco inclinado|gm,gl||Incline o tronco levemente à frente;Abra as pernas com controle;Volte devagar|Usar impulso do quadril',
 /* ABDÔMEN */
 'Abdominal supra no solo|ab|ob|Mãos junto às orelhas, sem puxar o pescoço;Suba as costelas em direção ao quadril;Desça devagar sem relaxar|Puxar o pescoço com as mãos',
+'Abdominal infra na máquina|ab|ob,an|Cadeira romana: costas coladas no encosto, antebraços nos apoios e mãos nas manoplas, com os ombros baixos;Eleve os joelhos até a altura do quadril, enrolando a pelve para cima; com as pernas estendidas fica mais difícil;Desça devagar até as pernas ficarem soltas, sem balançar o corpo|Balançar o corpo e usar o impulso em vez de contrair o abdômen',
 'Abdominal infra (elevação de pernas)|ab|ob|Quadril apoiado, lombar colada no chão;Suba as pernas até ~90°;Desça devagar sem arquear a lombar|Deixar a lombar descolar do chão',
 'Elevação de pernas na barra|ab|ob,an|Pendurado, ombros baixos;Suba as pernas dobrando o quadril, sem balançar;Desça devagar|Balançar o corpo para subir',
 'Abdominal na polia (corda)|ab|ob|De joelhos, corda junto à cabeça;Curve o tronco aproximando costelas e quadril;Volte devagar|Puxar com os braços ou o quadril',
@@ -275,8 +276,8 @@ var FAM=[
  ['Tríceps francês na corda','Tríceps francês com halter','Tríceps testa na corda','Tríceps unilateral na polia','Tríceps coice com halter'],
  ['Mergulho no banco','Mergulho nas paralelas (tríceps)','Supino fechado'],
  ['Cadeira abdutora','Abdução de quadril na polia','Abdução em pé com caneleira','Abdução deitado de lado','Abdutora com tronco inclinado'],
- ['Abdominal na máquina','Abdominal na polia (corda)','Abdominal supra no solo','Abdominal declinado','Abdominal remador','Roda abdominal','Prancha'],
- ['Abdominal infra (elevação de pernas)','Elevação de pernas na barra','Abdominal oblíquo na polia']
+ ['Abdominal na máquina','Abdominal infra na máquina','Abdominal na polia (corda)','Abdominal supra no solo','Abdominal declinado','Abdominal remador','Roda abdominal','Prancha'],
+ ['Abdominal infra (elevação de pernas)','Abdominal infra na máquina','Elevação de pernas na barra','Abdominal oblíquo na polia']
 ];
 function subs(name){
  var k=nrm(name),out=[],seen={};seen[k]=1;
@@ -284,7 +285,7 @@ function subs(name){
   f.map(function(n,j){return [Math.abs(j-i),j,n]}).filter(function(x){return x[0]>0}).sort(function(a,b){return a[0]-b[0]||a[1]-b[1]}).forEach(function(x){var q=nrm(x[2]);if(!seen[q]){seen[q]=1;out.push(x[2])}})});
  return out.slice(0,6)}
 window.EXI={
- v:11,
+ v:12,
  ml:ML,
  get:function(name,group){
   var r=BY[nrm(name)];if(r)return {p:r.p,a:r.a,t:r.t,e:r.e,own:true};
