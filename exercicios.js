@@ -131,6 +131,7 @@ var RAW=[
 'Tríceps barra na polia|tr||Cotovelos junto ao corpo e fixos;Estenda os braços sem arquear as costas;Volte devagar até ~90°|Inclinar o corpo para usar o peso',
 'Cadeira abdutora|gm|gl|Costas encostadas, quadril firme no banco;Abra as pernas com controle, sem impulso;Volte devagar sem soltar o peso|Usar impulso e deixar o peso bater',
 'Abdominal na máquina|ab|ob|Ajuste o assento e segure firme;Encurte o abdômen aproximando as costelas do quadril;Volte devagar sem soltar o peso|Puxar com os braços ou com o pescoço',
+'Abdominal crunch na máquina de anilhas|ab|ob|Sente com as costas no encosto e ajuste o assento para o eixo da máquina ficar na altura do abdômen;Segure nas manoplas ou cruze os braços no apoio junto ao peito, sem puxar com os braços;Enrole o tronco aproximando as costelas da pelve, soltando o ar, e volte devagar sem soltar o peso|Puxar com os braços ou o pescoço e usar o quadril em vez de enrolar o tronco',
 /* POSTERIOR (extras) */
 'Stiff com barra|po,gl|lo|Joelhos levemente flexionados e coluna neutra;Leve o quadril para trás, deslizando a barra rente às pernas;Desça até alongar o posterior e suba apertando o glúteo|Arredondar a lombar ou agachar em vez de dobrar o quadril',
 'Stiff com halteres|po,gl|lo|Halteres rente às coxas, coluna neutra;Quadril vai para trás, joelhos levemente flexionados;Volte apertando o glúteo|Arredondar as costas',
@@ -276,7 +277,7 @@ var FAM=[
  ['Tríceps francês na corda','Tríceps francês com halter','Tríceps testa na corda','Tríceps unilateral na polia','Tríceps coice com halter'],
  ['Mergulho no banco','Mergulho nas paralelas (tríceps)','Supino fechado'],
  ['Cadeira abdutora','Abdução de quadril na polia','Abdução em pé com caneleira','Abdução deitado de lado','Abdutora com tronco inclinado'],
- ['Abdominal na máquina','Abdominal infra na máquina','Abdominal na polia (corda)','Abdominal supra no solo','Abdominal declinado','Abdominal remador','Roda abdominal','Prancha'],
+ ['Abdominal na máquina','Abdominal crunch na máquina de anilhas','Abdominal infra na máquina','Abdominal na polia (corda)','Abdominal supra no solo','Abdominal declinado','Abdominal remador','Roda abdominal','Prancha'],
  ['Abdominal infra (elevação de pernas)','Abdominal infra na máquina','Elevação de pernas na barra','Abdominal oblíquo na polia']
 ];
 function subs(name){
@@ -285,7 +286,7 @@ function subs(name){
   f.map(function(n,j){return [Math.abs(j-i),j,n]}).filter(function(x){return x[0]>0}).sort(function(a,b){return a[0]-b[0]||a[1]-b[1]}).forEach(function(x){var q=nrm(x[2]);if(!seen[q]){seen[q]=1;out.push(x[2])}})});
  return out.slice(0,6)}
 window.EXI={
- v:12,
+ v:13,
  ml:ML,
  get:function(name,group){
   var r=BY[nrm(name)];if(r)return {p:r.p,a:r.a,t:r.t,e:r.e,own:true};
