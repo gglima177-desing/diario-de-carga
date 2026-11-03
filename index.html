@@ -280,8 +280,19 @@ var PLANS={
   {id:'3b',n:'B · Costas · Bíceps',items:[['puxada',4],['e-remada-sentada-na-maquina',3],['rem-iso',3],['pullover',2],['post',4],['lat',3],['rosca-inc',3],['rosca-sc',3],['rosca-mart',3]]},
   {id:'3c',n:'C · Pernas completas',items:[['e-agachamento-pendular',3],['leg45',3],['v-squat',3],['ext',3],['flex-cad',4],['flex-mesa',4],['flex-uni',3],['pant-pe',3],['pant-sen',3],['abdom',3]]}
  ]},
- p1:{n:'Full body',days:[
+ p1:{n:'Full 1 dia',days:[
   {id:'1a',n:'Full body · Corpo inteiro',items:[['sup-maq',3],['inc-halt',2],['puxada',3],['rem',3],['leg45',3],['ext',2],['flex-cad',3],['desenv',2],['lat-pol',3],['post',2],['rosca-inc',3],['tri-ba',3],['pant-pe',3],['abdom',3]]}
+ ]},
+ f3:{n:'Full 3 dias',days:[
+  {id:'f3a',n:'A · Full body',items:[['sup-maq',3],['cruc',2],['puxada',3],['rem',2],['leg45',3],['ext',2],['flex-cad',4],['desenv',2],['lat-pol',4],['post',4],['rosca-inc',4],['tri-ba',4],['pant-pe',4],['abdom',3]]},
+  {id:'f3b',n:'B · Full body',items:[['inc-halt',2],['decl-pol',2],['rem-iso',3],['e-puxada-pela-frente-pegada-aberta',2],['v-squat',3],['ext',2],['flex-mesa',4],['e-desenvolvimento-na-maquina',2],['lat-maq',4],['e-crucifixo-inverso-na-maquina',4],['rosca-sc',4],['tri-fr',4],['pant-sen',4],['e-abdominal-crunch-na-maquina-de-anilhas',3]]},
+  {id:'f3c',n:'C · Full body',items:[['sup-halt',2],['cruc-pol',2],['puxada',3],['rem-uni',2],['e-agachamento-pendular',3],['e-cadeira-extensora-unilateral',2],['stiff',2],['flex-uni',2],['desenv',2],['lat-halt',4],['e-face-pull-na-corda',4],['rosca-mart',4],['tri-te',4],['pant-pe',2],['pant-sen',2],['e-abdominal-infra-na-maquina',3]]}
+ ]},
+ f4:{n:'Full 4 dias',days:[
+  {id:'f4a',n:'A · Full body',items:[['sup-maq',4],['puxada',4],['leg45',4],['flex-cad',3],['lat-pol',3],['post',3],['rosca-inc',3],['tri-ba',3],['pant-pe',3],['abdom',3]]},
+  {id:'f4b',n:'B · Full body',items:[['inc-halt',3],['rem',2],['pullover',2],['v-squat',4],['flex-mesa',3],['desenv',2],['lat-maq',3],['e-crucifixo-inverso-na-maquina',3],['rosca-sc',3],['tri-fr',3],['pant-sen',3],['e-abdominal-infra-na-maquina',3]]},
+  {id:'f4c',n:'C · Full body',items:[['sup-halt',2],['cruc-pol',2],['rem-iso',4],['e-agachamento-pendular',2],['ext',2],['stiff',3],['lat-halt',3],['e-face-pull-na-corda',3],['rosca-mart',3],['tri-te',3],['pant-pe',3],['e-abdominal-crunch-na-maquina-de-anilhas',3]]},
+  {id:'f4d',n:'D · Full body',items:[['e-supino-inclinado-na-maquina',3],['e-puxada-supinada',2],['rem-uni',2],['agach',2],['e-cadeira-extensora-unilateral',2],['flex-uni',3],['e-desenvolvimento-na-maquina',2],['lat',3],['post',3],['rosca-alt',3],['tri-ba',3],['pant-sen',3],['e-abdominal-na-polia-corda',3]]}
  ]}
 };
 
@@ -407,7 +418,7 @@ function renderHome(){
  var sets=0,trs=0;Object.keys(gv).forEach(function(k){sets+=gv[k]});all.forEach(function(s){if(s.date>=ws&&s.date<=addDays(ws,6)&&totalValid(s)>0)trs++});
  var nx=nextIdx(P);
  var h='<header class="top"><div><h1>Diário de Carga</h1><p class="sub">'+esc(fmtLong(todayStr()))+'</p></div>'+statusEl()+'</header>'+noteEl();
- h+='<div class="seg" role="group" aria-label="Versão do treino">'+Object.keys(PLANS).map(function(k){return '<button type="button" data-a="prog" data-v="'+k+'" aria-pressed="'+(S.cfg.program===k)+'">'+PLANS[k].n+'</button>'}).join('')+'</div>';
+ h+='<div class="seg" style="grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr))" role="group" aria-label="Versão do treino">'+Object.keys(PLANS).map(function(k){return '<button type="button" data-a="prog" data-v="'+k+'" aria-pressed="'+(S.cfg.program===k)+'">'+PLANS[k].n+'</button>'}).join('')+'</div>';
  var cw=cardioWeek(ws);
  h+='<div class="week"><div><b>'+trs+'</b><span>treinos na semana</span></div><div><b>'+sets+'</b><span>séries válidas</span></div><div><b>'+Math.round(cw.min)+'</b><span>min de cardio</span></div></div>';
  h+=P.days.map(function(d,i){
